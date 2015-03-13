@@ -1,0 +1,1 @@
+{"mixinTypes":[],"runners":{"configs":{}},"builders":{"configs":{},"default":"maven"},"description":"IKnow. Just that.","type":"maven","attributes":{"languageVersion":["1.6"],"language":["java"]}}
