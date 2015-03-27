@@ -1,27 +1,17 @@
 package org.ms.iknow.core.type;
 
+//import org.ms.iknow.persistence.repo.MemoryRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Neuron {
-  private long id;
+public abstract class Neuron extends ElementBase {
+  
   private String name;
-  private List<ValueEntry> valueEntries = new ArrayList<ValueEntry>();
+  private List<Synapse> synapses;
   
-  public Neuron(Long id, String name, ValueEntry... valueEntries) {
-    this.id = id;
-    this.name = name;
-    for (ValueEntry valueEntry : valueEntries) {
-      this.valueEntries.add(valueEntry);
-    }
-  }
-  
-  public Long getId() {
+  public String getId() {
     return id;
-  }
-  
-  public void setId(Long id) {
-    this.id = id;
   }
   
   public String getName() {
@@ -32,20 +22,29 @@ public class Neuron {
     this.name = name;
   }
   
-  public List<ValueEntry> getValueEntries() {
-    return valueEntries;
+  public List<Synapse> getSynapses() {
+    return synapses;
   }
   
-  public ValueEntry getValueEntry(String key) {
-    for (ValueEntry valueEntry : this.valueEntries) {
-      if (valueEntry.getKey().equals(key)) {
-        return valueEntry;
+  public void addSynapse(Synapse synapse) {
+    if (synapses == null) {
+      synapses = new ArrayList<Synapse>();
+    }
+    synapses.add(synapse);
+  }
+  
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    
+    builder.append(super.toString());
+    builder.append("  id = " + id + "\n");
+    builder.append("  name = " + name + "\n");
+    if (synapses != null) {
+      for (Synapse synapse : synapses) {
+        builder.append("  synapse = " + synapse + "\n");
       }
     }
-    return null;
-  }
-  
-  public void addValueEntry(ValueEntry valueEntry) {
-    this.valueEntries.add(valueEntry);
+    
+    return builder.toString();
   }
 }
