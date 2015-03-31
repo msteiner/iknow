@@ -20,6 +20,7 @@ public abstract class Neuron extends ElementBase {
   
   public void setName(String name) {
     this.name = name;
+    setChangeDate();
   }
   
   public List<Synapse> getSynapses() {
@@ -31,13 +32,13 @@ public abstract class Neuron extends ElementBase {
       synapses = new ArrayList<Synapse>();
     }
     synapses.add(synapse);
+    setChangeDate();
   }
   
   public String toString() {
     StringBuilder builder = new StringBuilder();
     
     builder.append(super.toString());
-    builder.append("  id = " + id + "\n");
     builder.append("  name = " + name + "\n");
     if (synapses != null) {
       for (Synapse synapse : synapses) {
