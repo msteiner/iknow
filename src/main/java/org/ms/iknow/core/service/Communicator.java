@@ -6,21 +6,25 @@ import org.ms.iknow.persistence.repo.MemoryRepository;
 
 public class Communicator {
   
-  public Neuron create(Neuron neuron) {
-    fire(neuron);
-    return neuron;
-  }
+    public Neuron create(Neuron neuron) {
+        fire(neuron);
+        return neuron;
+    }
+
+    public Synapse create(Synapse synapse) {
+        fire(synapse);
+        return synapse;
+    }
   
-  public Synapse create(Synapse synapse) {
-    fire(synapse);
-    return synapse;
-  }
-  
-  private static void fire(Neuron neuron) {
-    MemoryRepository.getInstance().persist(neuron);
-  }
-  
-  private static void fire(Synapse synapse) {
-    MemoryRepository.getInstance().persist(synapse);
-  }
+    public Neuron ask(Neuron neuron) {
+        return MemoryRepository.getInstance().find(neuron);
+    }
+
+    private static void fire(Neuron neuron) {
+        MemoryRepository.getInstance().persist(neuron);
+    }
+
+    private static void fire(Synapse synapse) {
+        MemoryRepository.getInstance().persist(synapse);
+    }
 }

@@ -7,16 +7,15 @@ import java.util.List;
 
 public abstract class Neuron extends ElementBase {
   
-  private String name;
-  private List<Synapse> synapses;
+  protected String name;
+  private List<Synapse> synapses = new ArrayList<Synapse>();
+  private List<String> synapseIds = new ArrayList<String>();
   
   public String getId() {
     return id;
   }
   
-  public String getName() {
-    return name;
-  }
+  public abstract String getName();
   
   public void setName(String name) {
     this.name = name;
@@ -27,12 +26,23 @@ public abstract class Neuron extends ElementBase {
     return synapses;
   }
   
+  public List<String> getSynapseIds() {
+    return synapseIds;
+  }
+  
   public void addSynapse(Synapse synapse) {
-    if (synapses == null) {
-      synapses = new ArrayList<Synapse>();
-    }
+    synapseIds.add(synapse.getId());
     synapses.add(synapse);
     setChangeDate();
+  }
+  
+  public abstract Neuron clone();
+  
+  protected void cloneNeuron(Neuron neuron) {
+    neuron.name = this.name;
+    neuron.synapseIds = this.synapseIds;
+    neuron.synapses = this.synapses;
+    cloneElementBase(neuron);
   }
   
   public String toString() {
@@ -40,12 +50,13 @@ public abstract class Neuron extends ElementBase {
     
     builder.append(super.toString());
     builder.append("  name = " + name + "\n");
+    /**
     if (synapses != null) {
       for (Synapse synapse : synapses) {
         builder.append("  synapse = " + synapse + "\n");
       }
     }
-    
+    */
     return builder.toString();
   }
 }

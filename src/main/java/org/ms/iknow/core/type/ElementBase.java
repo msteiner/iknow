@@ -53,6 +53,14 @@ abstract class ElementBase {
     this.changeDate = changeDate;
   }
   
+  protected void cloneElementBase(ElementBase elementBase) {
+    elementBase.id = this.id;
+    elementBase.createUser = this.createUser;
+    elementBase.createDate = this.createDate;
+    elementBase.changeUser = this.changeUser;
+    elementBase.changeDate = this.changeDate;
+  }
+  
   public String toString() {
     StringBuilder builder = new StringBuilder();
     

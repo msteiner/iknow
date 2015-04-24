@@ -8,10 +8,22 @@ import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.radiation.HSB;
 import org.ms.iknow.core.type.sense.text.Text;
+import org.ms.iknow.printer.NetPrinter;
 
 public class RepositoryTest {
 
-    private static Repository repo = MemoryRepository.getInstance();
+    private static Repository repo              = MemoryRepository.getInstance();
+
+    public static final int   HUE_GREEN         = 120;
+    public static final int   HUE_BROWN         = 240;
+
+    public static final int   SATURATION_LOW    = 0;
+    public static final int   SATURATION_MEDIUM = 50;
+    public static final int   SATURATION_HIGH   = 100;
+
+    public static final int   BRIGHTNESS_LOW    = 0;
+    public static final int   BRIGHTNESS_MEDIUM = 50;
+    public static final int   BRIGHTNESS_HIGH   = 100;
 
     @Before
     public void init() {
@@ -19,14 +31,38 @@ public class RepositoryTest {
     }
 
     @Test
+    public void testPersistMultiTree() {
+        Text tree = new Text("tree");
+        Text green = new Text("green");
+        Text color = new Text("color");
+        Text brown = new Text("brown");
+        Text forest = new Text("forest");
+        HSB hsbGreen = new HSB(HUE_GREEN, SATURATION_LOW, BRIGHTNESS_HIGH);
+        HSB hsbBrown = new HSB(HUE_BROWN, SATURATION_HIGH, BRIGHTNESS_HIGH);
+
+        Synapse greenAndHsbGreen = new Synapse(green, Relation.IS, Relation.IS, hsbGreen);
+        Synapse brownAndHsbBrown = new Synapse(brown, Relation.IS, Relation.IS, hsbBrown);
+        Synapse colorAndGreen = new Synapse(color, Relation.IS, Relation.IS, brown);
+        Synapse colorAndBrown = new Synapse(color, Relation.IS, Relation.IS, brown);
+        Synapse treeAndGreen = new Synapse(tree, Relation.IS, Relation.IS, green);
+        Synapse treeAndBrown = new Synapse(tree, Relation.IS, Relation.IS, brown);
+        Synapse forestAndTree = new Synapse(forest, Relation.HAS_MANY, Relation.IS_PART_OF, tree);
+      System.out.println("forest has " + forest.getSynapses().size() + " synapses.");
+
+      NetPrinter.print(forest);
+    }
+
+    @Test
     public void testPersistAndFindNeuronAsObject() {
 
         // create a HSB and persist it.
         Neuron hsb = createHSBNeuron();
+        System.out.println("*** *** hsb1=" + hsb);
         repo.persist(hsb);
 
         // read the created HSB from the repository.
         Neuron persistedHSB = repo.find(hsb);
+        System.out.println("*** *** hsb2=" + persistedHSB);
 
         // Assertions.
         assertNeuron((HSB)hsb, (HSB)persistedHSB);
@@ -53,8 +89,8 @@ public class RepositoryTest {
 
         // Assertions.
         Assert.assertNotNull("Synapse is not set.", synapse);
-        HSB parent = (HSB) repo.findNeuronById(synapse.getParentId());
-        Text child = (Text) repo.findNeuronById(synapse.getChildId());
+        HSB parent = (HSB)repo.findNeuronById(synapse.getParentId());
+        Text child = (Text)repo.findNeuronById(synapse.getChildId());
         Assert.assertNotNull("Parent is not set.", hsb);
         Assert.assertNotNull("Child is not set.", text);
         assertNeuron((HSB)hsb, (HSB)parent);

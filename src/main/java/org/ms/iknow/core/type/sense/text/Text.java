@@ -10,33 +10,54 @@ import org.ms.iknow.core.type.Neuron;
  * String value.
  */
 public class Text extends Neuron {
-  
-  private String text;
-  
-  public Text() {
-    super();
-  }
-  
-  public Text(String text) {
-    super();
-    this.text = text;
-  }
-  
-  public String getText () {
-    return text;
-  }
-  
-  public void setText (String text) {
-    this.text = text;
-  }
-  
-  public String toString() {
-    StringBuilder builder = new StringBuilder();
-    
-    builder.append("\n" + this.getClass().getName() + "\n");
-    builder.append(super.toString() + "\n");
-    builder.append("  text = " + text + "\n");
-    
-    return builder.toString();
-  }
+
+    private String text;
+
+    public Text() {
+        super();
+    }
+
+    public Text(String text) {
+        super();
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String getName() {
+        if (this.name == null) {
+          if (this.text.length() > 0) {
+            return text.substring(0, text.length());
+          }
+            else {
+              return "unknown name";
+            }
+        }
+        return this.name;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("\n" + this.getClass().getName() + "\n");
+        builder.append(super.toString() + "\n");
+        builder.append("  name = " + getName() + "\n");
+        builder.append("  text = " + text + "\n");
+
+        return builder.toString();
+    }
+
+    @Override
+    public Text clone() {
+        Text t = new Text(this.text);
+        cloneNeuron(t);
+        return t;
+    }
 }
