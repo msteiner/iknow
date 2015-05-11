@@ -71,12 +71,12 @@ public class CreateAssumptionTest extends AssertionKit {
         Synapse synapse = new Synapse(hSB, Relation.IS, text, 10);
         synapse = communicator.create(synapse);
 
-        System.out.println("Neuron 1 = " + hSB);
-        System.out.println("Neuron 2 = " + text);
-        System.out.println("Synapse 1 = " + synapse);
+        //System.out.println("Neuron 1 = " + hSB);
+        //System.out.println("Neuron 2 = " + text);
+        //System.out.println("Synapse 1 = " + synapse);
 
-        System.out.println(MemoryRepository.getInstance().getNumberOfNeurons() + " neuron(s) found.");
-        System.out.println(MemoryRepository.getInstance().getNumberOfSynapses() + " synapse(s) found.");
+        //System.out.println(MemoryRepository.getInstance().getNumberOfNeurons() + " neuron(s) found.");
+        //System.out.println(MemoryRepository.getInstance().getNumberOfSynapses() + " synapse(s) found.");
 
         assertNumberOfElements(2, MemoryRepository.getInstance().getNumberOfNeurons());
         assertNumberOfElements(1, MemoryRepository.getInstance().getNumberOfSynapses());
@@ -97,17 +97,17 @@ public class CreateAssumptionTest extends AssertionKit {
         Assert.assertNotNull(text.getId());
         Assert.assertEquals(TEXT_1, text.getText());
 
-        System.out.println("Neuron = " + text);
-        System.out.println("Neuron hashcode = " + text.hashCode());
+        //System.out.println("Neuron = " + text);
+        //System.out.println("Neuron hashcode = " + text.hashCode());
 
-        System.out.println(MemoryRepository.getInstance().getNumberOfNeurons() + " neuron(s) found.");
-        System.out.println(MemoryRepository.getInstance().getNumberOfSynapses() + " synapse(s) found.");
+        //System.out.println(MemoryRepository.getInstance().getNumberOfNeurons() + " neuron(s) found.");
+        //System.out.println(MemoryRepository.getInstance().getNumberOfSynapses() + " synapse(s) found.");
 
         assertNumberOfElements(1, MemoryRepository.getInstance().getNumberOfNeurons());
         assertNumberOfElements(0, MemoryRepository.getInstance().getNumberOfSynapses());
 
         Neuron result = repository.find(text);
-        System.out.println("Found Neuron = " + result);
+        //System.out.println("Found Neuron = " + result);
         assertNeuron(text, (Text)result);
 
     }

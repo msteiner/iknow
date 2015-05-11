@@ -57,7 +57,7 @@ public class HSB extends Neuron {
           builder.append(this.saturation);
           builder.append(".");
           builder.append(this.brightness);
-          builder.append("");
+          builder.append("]");
             return builder.toString();
         }
         return this.name;

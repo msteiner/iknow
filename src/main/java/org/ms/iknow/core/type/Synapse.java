@@ -25,14 +25,14 @@ public class Synapse extends ElementBase {
         this.weight = weight;
     }
 
-    public Synapse(Neuron parent, Relation relationChildParent, Relation relationParentChild, Neuron child) {
+    public Synapse(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child) {
         super();
-        initPair(parent, relationChildParent, relationParentChild, child);
+        initPair(parent, relationParentChild, relationChildParent, child);
     }
 
-    public Synapse(Neuron parent, Relation relationChildParent, Relation relationParentChild, Neuron child, int weight) {
+    public Synapse(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child, int weight) {
         super();
-        initPair(parent, relationChildParent, relationParentChild, child);
+        initPair(parent, relationParentChild, relationChildParent, child);
         this.weight = weight;
     }
 
@@ -43,13 +43,13 @@ public class Synapse extends ElementBase {
         this.relation = relation;
     }
 
-    private void initPair(Neuron parent, Relation relationChildParent, Relation relationParentChild, Neuron child) {
+    private void initPair(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child) {
         setParent(parent);
         parent.addSynapse(this);
         setChild(child);
         child.addSynapse(this);
-        this.relationChildParent = relationChildParent;
         this.relationParentChild = relationParentChild;
+        this.relationChildParent = relationChildParent;
     }
 
     public Neuron getParent() {
@@ -60,7 +60,7 @@ public class Synapse extends ElementBase {
         return parentId;
     }
 
-    private void setParent(Neuron parent) {
+    public void setParent(Neuron parent) {
         this.parent = parent;
         if (parent != null) {
             this.parentId = parent.getId();
@@ -105,7 +105,7 @@ public class Synapse extends ElementBase {
     }
 
     public Synapse cloneSimple() {
-        Synapse s = new Synapse(this.parent, this.relation, this.child, this.weight);
+        Synapse s = new Synapse(this.parent, this.relationParentChild, this.relationChildParent, this.child, this.weight);
         s.id = this.id;
         s.setParent(null);
         s.setChild(null);
@@ -119,7 +119,16 @@ public class Synapse extends ElementBase {
         builder.append(super.toString() + "\n");
         builder.append("  parentId = " + parentId + "\n");
         builder.append("  childId = " + childId + "\n");
-        builder.append("  relation = " + relation + "\n");
+        if (relationParentChild != null) {
+            builder.append("  relationParentChild = " + relationParentChild.getDescription() + "\n");
+        } else {
+            builder.append("  relationParentChild = null\n");
+        }
+        if (relationChildParent != null) {
+            builder.append("  relationChildParent = " + relationChildParent.getDescription() + "\n");
+        } else {
+            builder.append("  relationChildParent = null\n");
+        }
         builder.append("  weight = " + weight + "\n");
 
         return builder.toString();

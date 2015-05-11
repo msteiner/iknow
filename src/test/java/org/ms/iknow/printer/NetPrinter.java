@@ -3,42 +3,53 @@ package org.ms.iknow.printer;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Synapse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class NetPrinter {
 
-    private static final int DEFAULT_DEPTH = 5;
+    public void printStatement(Neuron neuron) {
 
-    private static List<String>     visited       = new ArrayList<String>();
-
-    public static void print(Neuron neuron) {
-        print("---------------------------------------------------------");
-        print(neuron.getName());
-      List<String> synapses = printSynapsesWithNeuron(neuron);
-        for (String s : synapses) {
-            print("   --- " + s);
-        }
-        print("---------------------------------------------------------");
     }
 
-    public static List<String> printSynapsesWithNeuron(Neuron neuron) {
-        List<String> list = new ArrayList<String>();
+    public void print(Neuron neuron) {
+        println("---------------------------------------------------------\n");
+
+        println(createTitle(neuron.getName()));
         for (Synapse synapse : neuron.getSynapses()) {
-            print(synapse.getRelationParentChild());
-            visited.add(synapse.getId());
-            Neuron child = synapse.getChild();
-            print(child.getName());
-            for (Synapse s : child.getSynapses()) {
-                if (!visited.contains(s.getId()))
-                    list.add(s.getId());
-                visited.add(s.getId());
-            }
+            println(createStatement(synapse));
         }
-        return list;
+
+        println("---------------------------------------------------------");
     }
 
-    private static void print(Object object) {
+    private String createTitle(String title) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(title);
+        builder.append(CHAR_LINE_BREAK);
+        for (int i = 0; i < title.length(); i++) {
+            builder.append(CHAR_LINE);
+        }
+
+        return builder.toString();
+    }
+
+    private String createStatement(Synapse synapse) {
+        StringBuilder builder = new StringBuilder();
+
+        String parentName = synapse.getParent().getName();
+        builder.append(parentName);
+        builder.append(CHAR_SPACE);
+        builder.append(synapse.getRelationChildParent());
+        builder.append(CHAR_SPACE);
+        builder.append(synapse.getChild().getName());
+
+        return builder.toString();
+    }
+
+    private void println(Object object) {
         System.out.println(object);
     }
+
+    public static final String CHAR_SPACE      = " ";
+    public static final String CHAR_LINE_BREAK = "\n";
+    public static final String CHAR_LINE       = "-";
 }

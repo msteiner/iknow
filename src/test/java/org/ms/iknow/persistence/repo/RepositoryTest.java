@@ -2,54 +2,107 @@ package org.ms.iknow.persistence.repo;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.radiation.HSB;
 import org.ms.iknow.core.type.sense.text.Text;
-import org.ms.iknow.printer.NetPrinter;
+import org.ms.iknow.persistence.repo.MemoryRepository;
 
 public class RepositoryTest {
 
-    private static Repository repo              = MemoryRepository.getInstance();
+    private static MemoryRepository repo              = MemoryRepository.getInstance();
 
-    public static final int   HUE_GREEN         = 120;
-    public static final int   HUE_BROWN         = 240;
+    public static final int         HUE_GREEN         = 120;
+    public static final int         HUE_BROWN         = 240;
 
-    public static final int   SATURATION_LOW    = 0;
-    public static final int   SATURATION_MEDIUM = 50;
-    public static final int   SATURATION_HIGH   = 100;
+    public static final int         SATURATION_LOW    = 0;
+    public static final int         SATURATION_MEDIUM = 50;
+    public static final int         SATURATION_HIGH   = 100;
 
-    public static final int   BRIGHTNESS_LOW    = 0;
-    public static final int   BRIGHTNESS_MEDIUM = 50;
-    public static final int   BRIGHTNESS_HIGH   = 100;
+    public static final int         BRIGHTNESS_LOW    = 0;
+    public static final int         BRIGHTNESS_MEDIUM = 50;
+    public static final int         BRIGHTNESS_HIGH   = 100;
 
     @Before
     public void init() {
-        // do nothing yet.
+        repo.deleteAll();
     }
 
     @Test
-    public void testPersistMultiTree() {
-        Text tree = new Text("tree");
-        Text green = new Text("green");
-        Text color = new Text("color");
-        Text brown = new Text("brown");
-        Text forest = new Text("forest");
-        HSB hsbGreen = new HSB(HUE_GREEN, SATURATION_LOW, BRIGHTNESS_HIGH);
-        HSB hsbBrown = new HSB(HUE_BROWN, SATURATION_HIGH, BRIGHTNESS_HIGH);
+    public void testPersistAndFindNeuron() {
+        Text expected = new Text("tree");
+        repo.persist(expected);
+        Text actual = (Text)repo.find(expected);
+        assertNeuron(expected, actual);
+    }
 
-        Synapse greenAndHsbGreen = new Synapse(green, Relation.IS, Relation.IS, hsbGreen);
-        Synapse brownAndHsbBrown = new Synapse(brown, Relation.IS, Relation.IS, hsbBrown);
-        Synapse colorAndGreen = new Synapse(color, Relation.IS, Relation.IS, brown);
-        Synapse colorAndBrown = new Synapse(color, Relation.IS, Relation.IS, brown);
-        Synapse treeAndGreen = new Synapse(tree, Relation.IS, Relation.IS, green);
-        Synapse treeAndBrown = new Synapse(tree, Relation.IS, Relation.IS, brown);
-        Synapse forestAndTree = new Synapse(forest, Relation.HAS_MANY, Relation.IS_PART_OF, tree);
-      System.out.println("forest has " + forest.getSynapses().size() + " synapses.");
+    @Test
+    public void testPersistAndFindStillExistingNeuron() {
+        Text expected = new Text("tree");
+        repo.persist(expected);
+        repo.persist(expected); // Write the same neuron again.
+        int nrOfNeurons = repo.getNumberOfNeurons();
+        Assert.assertTrue("Expected 1 Neuron but found " + nrOfNeurons, 1 == nrOfNeurons);
+        Text actual = (Text)repo.find(expected);
+        assertNeuron(expected, actual);
+    }
 
-      NetPrinter.print(forest);
+    @Test
+    public void testPersistAndFindTwoNeuronsWithDifferentInstances() {
+        Text expected1 = new Text("tree");
+        Text expected2 = new Text("tree");
+        repo.persist(expected1);
+        repo.persist(expected2);
+        int nrOfNeurons = repo.getNumberOfNeurons();
+        Assert.assertTrue("Expected 2 Neurons but found " + nrOfNeurons, 2 == nrOfNeurons);
+        Text actual1 = (Text)repo.find(expected1);
+        Text actual2 = (Text)repo.find(expected2);
+        assertNeuron(expected1, actual1);
+        assertNeuron(expected2, actual2);
+    }
+
+    @Test
+    public void testPersistAndFindSynapse() {
+        Text expected1 = new Text("tree");
+        Text expected2 = new Text("forest");
+        Synapse expectedSynapse = new Synapse(expected2, Relation.HAS_MANY, Relation.IS_PART_OF, expected1);
+        repo.persist(expectedSynapse);
+
+        Synapse actualSynapse = repo.findSynapseById(expectedSynapse.getId());
+
+        String expectedParentChild = getRelationMessageParentToChild(expectedSynapse);
+        String expectedChildParent = getRelationMessageChildToParent(expectedSynapse);
+        String actualParentChild = getRelationMessageParentToChild(actualSynapse);
+        String actualChildParent = getRelationMessageChildToParent(actualSynapse);
+
+        Assert.assertEquals("Expected " + expectedParentChild + " but found " + actualParentChild + ".", expectedParentChild,
+                            actualParentChild);
+        Assert.assertEquals("Expected " + expectedChildParent + " but found " + actualChildParent + ".", expectedChildParent,
+                            actualChildParent);
+    }
+
+    @Test
+    public void testPersistAndFindExistingSynapseWithExistingNeurons() {
+        Text expected1 = new Text("tree");
+        Text expected2 = new Text("forest");
+        Synapse expectedSynapse = new Synapse(expected2, Relation.HAS_MANY, Relation.IS_PART_OF, expected1);
+        repo.persist(expectedSynapse);
+        repo.persist(expectedSynapse); // Write the same things again.
+
+        Synapse actualSynapse = repo.findSynapseById(expectedSynapse.getId());
+
+        String expectedParentChild = getRelationMessageParentToChild(expectedSynapse);
+        String expectedChildParent = getRelationMessageChildToParent(expectedSynapse);
+        String actualParentChild = getRelationMessageParentToChild(actualSynapse);
+        String actualChildParent = getRelationMessageChildToParent(actualSynapse);
+
+        Assert.assertEquals("Expected " + expectedParentChild + " but found " + actualParentChild + ".", expectedParentChild,
+                            actualParentChild);
+        Assert.assertEquals("Expected " + expectedChildParent + " but found " + actualChildParent + ".", expectedChildParent,
+                            actualChildParent);
     }
 
     @Test
@@ -57,12 +110,10 @@ public class RepositoryTest {
 
         // create a HSB and persist it.
         Neuron hsb = createHSBNeuron();
-        System.out.println("*** *** hsb1=" + hsb);
         repo.persist(hsb);
 
         // read the created HSB from the repository.
         Neuron persistedHSB = repo.find(hsb);
-        System.out.println("*** *** hsb2=" + persistedHSB);
 
         // Assertions.
         assertNeuron((HSB)hsb, (HSB)persistedHSB);
@@ -95,21 +146,6 @@ public class RepositoryTest {
         Assert.assertNotNull("Child is not set.", text);
         assertNeuron((HSB)hsb, (HSB)parent);
         assertNeuron((Text)text, (Text)child);
-    }
-
-    @Test
-    public void testPersistAndFindNeuron() {
-        // do nothing yet since covered by testPersistAndFindNeuronAsObject
-    }
-
-    @Test
-    public void testPersistAndFindSynapse() {
-        // do nothing yet since covered by testPersistAndFindSynapseAsObject
-    }
-
-    @Test
-    public void testDeleteAll() {
-
     }
 
     private Neuron createHSBNeuron() {
@@ -146,5 +182,27 @@ public class RepositoryTest {
 
     private String getMessage(Object expected, Object actual) {
         return "Expected " + expected + " but found " + actual + ".";
+    }
+
+    private String getRelationMessageParentToChild(Synapse synapse) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(synapse.getParent().getName());
+        builder.append(" ");
+        builder.append(synapse.getRelationParentChild().getDescription());
+        builder.append(" ");
+        builder.append(synapse.getChild().getName());
+
+        return builder.toString();
+    }
+
+    private String getRelationMessageChildToParent(Synapse synapse) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(synapse.getChild().getName());
+        builder.append(" ");
+        builder.append(synapse.getRelationChildParent().getDescription());
+        builder.append(" ");
+        builder.append(synapse.getParent().getName());
+
+        return builder.toString();
     }
 }

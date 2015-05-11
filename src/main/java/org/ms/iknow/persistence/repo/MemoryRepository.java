@@ -7,6 +7,7 @@ import org.ms.iknow.core.type.sense.radiation.HSB;
 import org.ms.iknow.core.type.sense.text.Text;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MemoryRepository extends ElementValidator implements Repository {
@@ -26,15 +27,6 @@ public class MemoryRepository extends ElementValidator implements Repository {
         return instance;
     }
 
-    /**
-     * This method persists a Neuron with its synapses id's.
-     * 
-     *   NEURON <...> SYNAPSE <---\  /---> SYNAPSE <...> NEURON
-     *                             \/
-     * NEURON <...> SYNAPSE <---> NEURON <---> SYNAPSE <...> NEURON
-     *                             /\
-     *   NEURON <...> SYNAPSE <---/  \---> SYNAPSE <...> NEURON
-     */
     @Override
     public Neuron persist(Neuron neuron) {
         checkNotNull("Expected Neuron but was null.", neuron);
@@ -42,12 +34,6 @@ public class MemoryRepository extends ElementValidator implements Repository {
         return neuron;
     }
 
-    /**
-     * This method persists a synapses including its parent neuron and child neuron.
-     * Further levels will be ignored.
-     * <br>
-     * NEURON <---> SYNAPSE <---> NEURON
-     */
     @Override
     public Synapse persist(Synapse synapse) {
         Synapse s = synapse;
@@ -56,6 +42,14 @@ public class MemoryRepository extends ElementValidator implements Repository {
         s = s.cloneSimple();
         this.synapses.put(synapse.getId(), s);
         return s;
+    }
+  
+    @Override
+    public List<Synapse> persist(List<Synapse> synapses) {
+        for (Synapse synapse : synapses) {
+          persist(synapse);
+        }
+        return synapses;
     }
   
     /**
@@ -128,13 +122,18 @@ public class MemoryRepository extends ElementValidator implements Repository {
 
     @Override
     public Synapse find(Synapse synapse) {
-        String id = synapse.getId();
-        return this.synapses.get(id);
+        Synapse s = this.synapses.get(synapse.getId());
+        s.setParent(findNeuronById(s.getParentId()));
+        s.setChild(findNeuronById(s.getChildId()));
+        return s;
     }
 
     @Override
     public Synapse findSynapseById(String id) {
-        return synapses.get(id);
+        Synapse s = this.synapses.get(id);
+        s.setParent(findNeuronById(s.getParentId()));
+        s.setChild(findNeuronById(s.getChildId()));
+        return s;
     }
 
     public int getNumberOfNeurons() {
