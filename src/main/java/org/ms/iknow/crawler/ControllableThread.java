@@ -1,5 +1,8 @@
 package org.ms.iknow.crawler;
 
+/**
+ * http://andreas-hess.info/programming/webcrawler/src/ie/moguntia/threads/ControllableThread.java
+ */
 abstract public class ControllableThread extends Thread {
 
     protected ThreadController threadController;
