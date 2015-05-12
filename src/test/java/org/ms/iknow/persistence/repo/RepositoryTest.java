@@ -2,7 +2,6 @@ package org.ms.iknow.persistence.repo;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
