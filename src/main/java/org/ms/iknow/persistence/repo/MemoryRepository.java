@@ -6,6 +6,7 @@ import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.radiation.HSB;
 import org.ms.iknow.core.type.sense.text.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,12 +93,27 @@ public class MemoryRepository extends ElementValidator implements Repository {
         return null;
     }
   
+  public void loadSynapses(List<Neuron> neurons) {
+    for (Neuron n : neurons) {
+      loadSynapses(n);
+    }
+  }
+  
     public void loadSynapses(Neuron neuron) {
         checkNotNull("Expected Neuron but was null.", neuron);
       
         for (String synapseId : neuron.getSynapseIds()) {
             neuron.addSynapse(synapses.get(synapseId));
         }
+    }
+  
+    public List<Synapse> getSynapses(List<String> synapseIds) {
+        checkNotNull("Expected Neuron but was null.", synapseIds);
+        List<Synapse> list = new ArrayList<Synapse>();
+        for (String synapseId : synapseIds) {
+            list.add(synapses.get(synapseId));
+        }
+        return list;
     }
 
     private boolean isEqualsValue(HSB expected, HSB actual) {
@@ -118,6 +134,32 @@ public class MemoryRepository extends ElementValidator implements Repository {
     @Override
     public Neuron findNeuronById(String id) {
         return neurons.get(id);
+    }
+  
+    @Override
+    public List<Neuron> findByName(String name) {
+        List<Neuron> list = new ArrayList<Neuron>();
+        for (Map.Entry<String, Neuron> entry : neurons.entrySet()) {
+            Neuron n = (Neuron)entry.getValue();
+            if (name.equals(n.getName())) {
+              List<Synapse> synapses = getSynapses(n.getSynapseIds());
+              System.out.println("+++ found " + getNumberOfSynapses() + " synapses in repo.");
+              System.out.println("+++ found " + synapses.size() + " synapses.");
+              for (Synapse syn : synapses) {
+               System.out.println(syn);
+              }
+             for (Synapse s : synapses) {
+               if (s != null) {
+                 n.addSynapse(s);
+               }
+               
+             }
+                list.add(n);
+            }
+        }
+      System.out.println("+++ " + list.size() + " Neurons found in response.");
+        // TODO find a way to add synapses
+        return list;
     }
 
     @Override

@@ -9,7 +9,7 @@ public class CrawlerBasicTest {
         ThreadController merger_1 = new ThreadController();
         merger_1.startMergerThread();
         try {
-            Thread.sleep(6000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -18,12 +18,12 @@ abstract public class ControllableThread extends Thread {
 
     public void run() {
         // do something
-        process(null);
+        process();
         threadController.finished(id);
     }
 
     /**
      * The thread invokes the process method.
      */
-    public abstract void process(Object o);
+    public abstract void process();
 }

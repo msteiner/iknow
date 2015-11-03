@@ -3,19 +3,13 @@ package org.ms.iknow.core.type;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Neuron extends Iterator {
+public abstract class Neuron extends ElementBase {
   
     protected String      name;
     private List<Synapse> synapses   = new ArrayList<Synapse>();
     private List<String>  synapseIds = new ArrayList<String>();
   
     public abstract String getName();
-
-    @Override
-    public Synapse nextSynapse() {
-        increaseCurrentIndex();
-        return synapses.get(currentIndex);
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -30,18 +24,10 @@ public abstract class Neuron extends Iterator {
         return synapseIds;
     }
 
-    public void addSynapse(Synapse synapse) {
-        synapseIds.add(synapse.getId());
+    public void addSynapse(Synapse synapse) {      
+        synapseIds.add(synapse.getId());        
         synapses.add(synapse);
         setChangeDate();
-    }
-
-    @Override
-    public boolean hasMoreElements() {
-        if (this.getSynapses().size() > currentIndex) {
-          return true;
-        }
-        return false;
     }
 
     public abstract Neuron clone();

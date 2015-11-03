@@ -7,8 +7,17 @@ package org.ms.iknow.crawler;
  */
 public class MergerThread extends ControllableThread {
 
+    /**
+     * IF ((obj_1.name == obj_2.name) AND
+     *     (synapse == null))
+     * THEN ask for (isIdentical)
+     */
     @Override
-    public void process(Object arg0) {
+    public void process() {
+
+    }
+
+    public void processOld(Object arg0) {
 
         int passed = 0;
         int max = 5000;

@@ -26,6 +26,8 @@ public interface Repository {
   
   public Neuron findNeuronById(String id);
   
+  public List<Neuron> findByName(String name);
+  
   public Synapse find(Synapse synapse);
   
   public Synapse findSynapseById(String id);
