@@ -1,4 +1,5 @@
-
+Projekt: IKnow
+Autor  : Mark Steiner
 
 
 
@@ -10,3 +11,24 @@ Problembeschreibung
   
   Ein Neuron kann mehrfach vorkommen. Ein Beispiel dafür ist das Neuron "Mutter", welches einerseits eine weibliche Person ist, andererseits 
   das Gegenstück zur Schraube darstellt. "Mutter" unterscheidet sich durch die direkt zugeordneten Synapsen. 
+
+Vorbedingungen
+--------------
+2 Neuronen sind erfasst:
+
+- "Mutter" <IST> "Lebewesen"
+- "Mutter" <IST> "Metall"
+
+Verarbeitung
+------------
+Jetzt erfolgt die Erstellung der Frage, ob beide Neuronen "Mutter" dieselbe Entität darstellen oder
+ob es sich um 2 verschiedene Entitäten handelt. Da das Neuron eine identische Bezeichnung aufweist, 
+erfolgt die Unterscheidung durch die mittels Synapsen verknüpften Neuronen. Die Prüfung erfolgt ledig-
+lich auf der obersten Hierarchiestufe.
+
+Hier die Frage:
+"Lebewesen" <IST> "Metall" ?
+oder
+"Metall" <IST> "Lebewesen" ?
+
+
