@@ -1,0 +1,12 @@
+
+
+
+
+Merge- Regeln für Neuronen
+==========================
+
+Problembeschreibung
+-------------------
+  
+  Ein Neuron kann mehrfach vorkommen. Ein Beispiel dafür ist das Neuron "Mutter", welches einerseits eine weibliche Person ist, andererseits 
+  das Gegenstück zur Schraube darstellt. "Mutter" unterscheidet sich durch die direkt zugeordneten Synapsen. 
