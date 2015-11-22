@@ -4,15 +4,19 @@ import org.json.JSONObject;
 import org.ms.iknow.core.service.CoreStatementService;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.sense.text.Text;
+import org.ms.iknow.core.type.sense.text.XMLText;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
 
 /**
  * http://crunchify.com/how-to-build-restful-service-with-java-using-jax-rs-and-jersey/
@@ -25,25 +29,15 @@ public class StatementService {
     // This method is called if TEXT_PLAIN is request
     @GET
     @Path("{entity1}")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response statement(@PathParam("entity1") String entity1) {
-
-        // write neuron
-        Text neuron = new Text(entity1);
-        service = new CoreStatementService();
+       Text neuron = new Text(entity1);
+      service = new CoreStatementService();
         service.persist(neuron);
 
         // read for response
         List<Neuron> neurons = service.findByName(entity1);
-        JSONObject entries = new JSONObject();
-        for (Neuron n : neurons) {
-            JSONObject entry = createJsonTextNeuron((Text)n);
-            entries.put(n.getId(), entry);
-        }
-
-      // create response
-        String result = "@Produces(\"application/json\") Output: \n\ntextNeuron Output: \n\n" + entries;
-        return Response.status(200).entity(result).build();
+        return Response.ok(neurons).build();
     }
 
     // This method is called if TEXT_PLAIN is request
@@ -53,6 +47,7 @@ public class StatementService {
     public Response statement(@PathParam("entity1") String entity1,
                               @PathParam("relation") String relation,
                               @PathParam("entity2") String entity2) {
+      System.out.println("+++ --- +++ Service 2...");
         String statement = "+++ " + entity1 + " " + relation + " " + entity2;
         JSONObject neurons = new JSONObject();
         Text arve = createDummyTextNeuron("Arve");

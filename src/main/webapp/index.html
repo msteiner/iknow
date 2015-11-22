@@ -1,20 +1,27 @@
 <!DOCTYPE html>
-<html>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<html ng-app="iknow_app">
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
 <head>
     <title>IKnow</title>
 </head>
 <body>
-Welcome to IKnow Server............
-<br/>
-<div ng-app="iknow_app" ng-controller="person_ctrl">
-  First Name: <input type="text" ng-model="firstName"><br>
-  Last Name: <input type="text" ng-model="lastName"><br>
-  <br>
-  Full Name: {{firstName + " " + lastName}}
-</div>
+  Welcome to IKnow Server.
+  <br/>
+  Please enter a statement:
+  <div ng-controller="relation_ctrl">
+      <p>{{neuron1}} {{selectedItem.value}} {{neuron2}}</p>
+      <input type="text" ng-model="neuron1" />
+      <select ng-model="selectedItem" ng-options="item.value for item in items"></select>
+      <input type="text" ng-model="neuron2" />  
+      <button type="button" ng-click="getFacts()">Sags mir!</button>
+    <table>
+      <tr ng-repeat = "neuron in facts">
+        <td>{{neuron.id}}</td>
+        <td>{{neuron.text}}</td>
+      </tr>
+    </table>
+  </div>
 
-<script src="./js/controller/personController.js"></script>
-
+  <script src="./js/controller/RelationController.js"></script>
 </body>
 </html>
