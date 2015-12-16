@@ -6,50 +6,29 @@ public class Synapse extends ElementBase {
     private String   parentId;
     private Neuron   child;
     private String   childId;
-    @Deprecated
     private Relation relation;
-    private Relation relationParentChild;
-    private Relation relationChildParent;
     private int      weight;
 
-    @Deprecated
+    public Synapse() {
+        super();        
+    }
+  
     public Synapse(Neuron parent, Relation relation, Neuron child) {
         super();
-        initPair(parent, relation, child);
+        initPair(parent, relation, child, 0);
     }
 
-    @Deprecated
     public Synapse(Neuron parent, Relation relation, Neuron child, int weight) {
         super();
-        initPair(parent, relation, child);
-        this.weight = weight;
+        initPair(parent, relation, child, weight);
     }
 
-    public Synapse(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child) {
-        super();
-        initPair(parent, relationParentChild, relationChildParent, child);
-    }
-
-    public Synapse(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child, int weight) {
-        super();
-        initPair(parent, relationParentChild, relationChildParent, child);
-        this.weight = weight;
-    }
-
-    @Deprecated
-    private void initPair(Neuron parent, Relation relation, Neuron child) {
+    private void initPair(Neuron parent, Relation relation, Neuron child, int weight) {
+        parent.getSynapseIds().add(this.id);
         setParent(parent);
         setChild(child);
         this.relation = relation;
-    }
-
-    private void initPair(Neuron parent, Relation relationParentChild, Relation relationChildParent, Neuron child) {
-        setParent(parent);
-        parent.addSynapse(this);
-        setChild(child);
-        child.addSynapse(this);
-        this.relationParentChild = relationParentChild;
-        this.relationChildParent = relationChildParent;
+        this.weight = weight;
     }
 
     public Neuron getParent() {
@@ -67,17 +46,8 @@ public class Synapse extends ElementBase {
         }
     }
 
-    @Deprecated
     public Relation getRelation() {
         return relation;
-    }
-
-    public Relation getRelationParentChild() {
-        return relationParentChild;
-    }
-
-    public Relation getRelationChildParent() {
-        return relationChildParent;
     }
 
     public Neuron getChild() {
@@ -104,11 +74,14 @@ public class Synapse extends ElementBase {
         setChangeDate();
     }
 
-    public Synapse cloneSimple() {
-        Synapse s = new Synapse(this.parent, this.relationParentChild, this.relationChildParent, this.child, this.weight);
+    public Synapse clone() {
+        Synapse s = new Synapse();
         s.id = this.id;
-        s.setParent(null);
-        s.setChild(null);
+        s.parentId = this.parentId;
+        s.childId = this.childId;
+        s.relation = this.relation;
+        s.weight = this.weight;
+        s = (Synapse)cloneElementBase(s);
         return s;
     }
 
@@ -117,17 +90,12 @@ public class Synapse extends ElementBase {
 
         builder.append("\n  " + this.getClass().getName() + "\n");
         builder.append(super.toString() + "\n");
-        builder.append("  parentId = " + parentId + "\n");
-        builder.append("  childId = " + childId + "\n");
-        if (relationParentChild != null) {
-            builder.append("  relationParentChild = " + relationParentChild.getDescription() + "\n");
+        builder.append("  neuron1Id = " + parentId + "\n");
+        builder.append("  neuron2Id = " + childId + "\n");
+        if (relation != null) {
+            builder.append("  relation = " + relation.getValue() + "\n");
         } else {
-            builder.append("  relationParentChild = null\n");
-        }
-        if (relationChildParent != null) {
-            builder.append("  relationChildParent = " + relationChildParent.getDescription() + "\n");
-        } else {
-            builder.append("  relationChildParent = null\n");
+            builder.append("  relation = null\n");
         }
         builder.append("  weight = " + weight + "\n");
 

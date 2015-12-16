@@ -29,20 +29,31 @@ public abstract class Neuron extends ElementBase {
         synapses.add(synapse);
         setChangeDate();
     }
+  
+    public void removeAllSynapses() {
+        this.synapses.clear();
+    }
 
     public abstract Neuron clone();
 
-    protected void cloneNeuron(Neuron neuron) {
+    protected Neuron cloneNeuron(Neuron neuron) {
         neuron.name = this.name;
-        neuron.synapseIds = this.synapseIds;
-        neuron.synapses = this.synapses;
-        cloneElementBase(neuron);
+        for (String sid : this.synapseIds) {
+            neuron.getSynapseIds().add(sid);
+        }
+        neuron = (Neuron) cloneElementBase(neuron);
+
+        return neuron;
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
         builder.append(super.toString());
+        for (String id : this.synapseIds) {
+          builder.append("     synapseId = " + id + "\n");
+        }
+        
         return builder.toString();
     }
 }

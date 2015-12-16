@@ -77,8 +77,8 @@ public class HSB extends Neuron {
 
     @Override
     public HSB clone() {
-        HSB h = new HSB(this.hue, this.saturation, this.brightness);
-        cloneNeuron(h);
-        return h;
+        HSB hsb = new HSB(this.hue, this.saturation, this.brightness);
+        hsb = (HSB) cloneNeuron(hsb);
+        return hsb;
     }
 }

@@ -44,8 +44,7 @@ public class HSBTest {
     
     Text text = new Text(TEXT_VALUE);
     
-    Synapse synapse = new Synapse(hsb, Relation.IS, text);
-    hsb.addSynapse(synapse);
+    new Synapse(hsb, Relation.IS, text);
       
     HSB clone = hsb.clone();
     
@@ -66,7 +65,7 @@ public class HSBTest {
     Assert.assertTrue("Expected 1 synapsesId but found " + clone.getSynapseIds().size(),
                      1 == clone.getSynapseIds().size());
     Assert.assertNotNull("Expected Synapse but was null.", clone.getSynapses());
-    Assert.assertTrue("Expected 1 synapse but found " + clone.getSynapses().size(),
-                     1 == clone.getSynapses().size());
+    Assert.assertTrue("Expected 0 synapse but found " + clone.getSynapses().size(),
+                     0 == clone.getSynapses().size());
   }
 }

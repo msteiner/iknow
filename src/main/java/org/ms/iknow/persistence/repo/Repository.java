@@ -6,31 +6,23 @@ import org.ms.iknow.core.type.Synapse;
 import java.util.List;
 
 public interface Repository {
-  
-  /**
-   * This method persists a {@link Neuron}. 
-   */
-  public Neuron persist(Neuron neuron);
-  
-  /**
-   * This method persists the given Synapse including its Neuron's(parent and child).
-   */
-  public Synapse persist(Synapse synapse);
-  
-  /**
-   * This method persists all synapses in a loop by calling {@link #persist(Synapse)}.
-   */
-  public List<Synapse> persist(List<Synapse> synapses);
-  
-  public Neuron find(Neuron neuron);
-  
-  public Neuron findNeuronById(String id);
-  
-  public List<Neuron> findByName(String name);
-  
-  public Synapse find(Synapse synapse);
-  
-  public Synapse findSynapseById(String id);
-  
-  public void deleteAll();
+
+    /**
+     * This method persists a {@link Neuron}. 
+     */
+    public Neuron persist(Neuron neuron);
+
+    /**
+     * This method persists the given Synapse including its Neuron's(parent and child).
+     */
+    public Synapse persist(Synapse synapse);
+
+    /**
+     * This method persists all synapses in a loop by calling {@link #persist(Synapse)}.
+     */
+    public List<Synapse> persist(List<Synapse> synapses);
+
+    public List<Neuron> findByName(String name);
+
+    public void deleteAll();
 }

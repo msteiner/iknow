@@ -76,12 +76,15 @@ abstract class ElementBase {
         this.index = 0;
     }
 
-    protected void cloneElementBase(ElementBase elementBase) {
+    protected ElementBase cloneElementBase(ElementBase elementBase) {
+
         elementBase.id = this.id;
         elementBase.createUser = this.createUser;
         elementBase.createDate = this.createDate;
         elementBase.changeUser = this.changeUser;
         elementBase.changeDate = this.changeDate;
+
+        return elementBase;
     }
 
     public String toString() {

@@ -1,21 +1,18 @@
 package org.ms.iknow.service.rest;
 
-import org.json.JSONObject;
 import org.ms.iknow.core.service.CoreStatementService;
 import org.ms.iknow.core.type.Neuron;
+import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
-import org.ms.iknow.core.type.sense.text.XMLText;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -31,8 +28,8 @@ public class StatementService {
     @Path("{entity1}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response statement(@PathParam("entity1") String entity1) {
-       Text neuron = new Text(entity1);
-      service = new CoreStatementService();
+        Text neuron = new Text(entity1);
+        service = new CoreStatementService();
         service.persist(neuron);
 
         // read for response
@@ -47,70 +44,17 @@ public class StatementService {
     public Response statement(@PathParam("entity1") String entity1,
                               @PathParam("relation") String relation,
                               @PathParam("entity2") String entity2) {
-      System.out.println("+++ --- +++ Service 2...");
-        String statement = "+++ " + entity1 + " " + relation + " " + entity2;
-        JSONObject neurons = new JSONObject();
-        Text arve = createDummyTextNeuron("Arve");
-        JSONObject jsonArve = new JSONObject();
-        jsonArve = createJsonDummyTextNeuron(jsonArve, arve);
-        Text erle = createDummyTextNeuron("Erle");
-        JSONObject jsonErle = new JSONObject();
-        jsonErle = createJsonDummyTextNeuron(jsonErle, erle);
+        service = new CoreStatementService();
+        Text neuron1 = new Text(entity1);
+        Text neuron2 = new Text(entity2);
+        Relation r = Relation.getRelation(relation);
+        Synapse synapse = new Synapse(neuron1, r, neuron2);
+        service.persist(synapse);
 
-        neurons.put("statement", statement);
-        neurons.put("arve", jsonArve);
-        neurons.put("erle", jsonErle);
-
-        String result = "@Produces(\"application/json\") Output: \n\ntextNeuron Output: \n\n" + neurons;
-        return Response.status(200).entity(result).build();
+        // read for response
+        List<Neuron> neurons = service.findByName(entity1);
+      System.out.println("   +++ " + neurons.size() + " neurons found: " + neurons.get(0));
+      
+      return Response.ok(neurons).build();
     }
-
-    /**
-     * @return
-     */
-    private JSONObject createJsonTextNeuron(Text neuron) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("changeDate", neuron.getChangeDate());
-        jsonObject.put("changeUser", neuron.getChangeUser());
-        jsonObject.put("createDate", neuron.getCreateDate());
-        jsonObject.put("createUser", neuron.getCreateUser());
-        jsonObject.put("index", neuron.getIndex());
-        jsonObject.put("name", neuron.getName());
-        jsonObject.put("visited", neuron.isVisited());
-        jsonObject.put("text", neuron.getText());
-        return jsonObject;
-    }
-
-    /**
-     * @return
-     */
-    private JSONObject createJsonDummyTextNeuron(JSONObject jsonObject, Text neuron) {
-        jsonObject.put("changeDate", neuron.getChangeDate());
-        jsonObject.put("changeUser", neuron.getChangeUser());
-        jsonObject.put("createDate", neuron.getCreateDate());
-        jsonObject.put("createUser", neuron.getCreateUser());
-        jsonObject.put("index", neuron.getIndex());
-        jsonObject.put("name", neuron.getName());
-        jsonObject.put("visited", neuron.isVisited());
-        jsonObject.put("text", neuron.getText());
-        return jsonObject;
-    }
-
-    /**
-     * @return
-     */
-    private Text createDummyTextNeuron(String text) {
-        Text neuron = new Text();
-        neuron.setChangeDate(new Date());
-        neuron.setChangeUser("Paul");
-        neuron.setCreateDate(new Date());
-        neuron.setCreateUser("Anita");
-        neuron.setIndex(1);
-        neuron.setName(text);
-        neuron.setVisited(false);
-        neuron.setText(text);
-        return neuron;
-    }
-
-
 }

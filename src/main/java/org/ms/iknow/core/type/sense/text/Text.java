@@ -56,8 +56,8 @@ public class Text extends Neuron {
 
     @Override
     public Text clone() {
-        Text t = new Text(this.text);
-        cloneNeuron(t);
-        return t;
+        Text text = new Text(this.text);
+        text = (Text) cloneNeuron(text);
+        return text;
     }
 }
