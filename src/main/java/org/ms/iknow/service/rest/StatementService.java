@@ -1,5 +1,6 @@
 package org.ms.iknow.service.rest;
 
+import org.json.JSONArray;
 import org.ms.iknow.core.service.CoreStatementService;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
@@ -53,8 +54,28 @@ public class StatementService {
 
         // read for response
         List<Neuron> neurons = service.findByName(entity1);
-      System.out.println("   +++ " + neurons.size() + " neurons found: " + neurons.get(0));
-      
+      printNeurons(neurons);
+        // TODO implement flat data table.
       return Response.ok(neurons).build();
+    }
+  
+  void printNeurons(List<Neuron> neurons) {
+    for (Neuron parent : neurons) {
+      System.out.println("+++ Id[" + parent.getId() + "], name=" + parent.getName() + ".");
+    }
+  }
+  
+  void printSynapses(List<Synapse> synapses) {
+    for (Synapse s : synapses) {
+      System.out.println("   +++ Id[" + s.getId() + "]: " + s.getRelation() + " " + s.getChild().getName());
+    }
+  }
+  
+    JSONArray toJSONArray(List<Neuron> neurons) {
+      JSONArray result = new JSONArray();
+      for (Neuron n : neurons) {
+        
+      }
+      return result;
     }
 }
