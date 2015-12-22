@@ -15,11 +15,12 @@
         <option ng-repeat="relation in relations" value="{{relation.id}}">{{relation.value}}</option>
       </select>
       <input type="text" ng-model="neuron2" />  
-      <button type="button" ng-click="getFacts()">Sags mir!</button>
+      <button type="button" ng-click="createFact()">Merk dir das.</button>
     <table>
       <tr ng-repeat = "neuron in facts">
-        <td>{{neuron.id}}</td>
-        <td>{{neuron.text}}</td>
+        <td>{{neuron.parentName}}</td>
+        <td>{{neuron.relationId}}</td>
+        <td>{{neuron.childName}}</td>
       </tr>
     </table>
   </div>

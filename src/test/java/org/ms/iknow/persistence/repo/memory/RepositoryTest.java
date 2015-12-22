@@ -1,11 +1,12 @@
 package org.ms.iknow.persistence.repo.memory;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
+import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.dataset.BasicSet;
 
 import java.util.List;
@@ -33,40 +34,40 @@ public class RepositoryTest {
 
         repo.addToIndex(key1, value1);
         values = repo.findInIndexes(key1);
-        Assert.assertNotNull("Expected a list but was null.", values);
-        Assert.assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
+        assertNotNull("Expected a list but was null.", values);
+        assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
         value = values.get(0);
-        Assert.assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
+        assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
 
         repo.addToIndex(key1, value2);
         values = repo.findInIndexes(key1);
-        Assert.assertNotNull("Expected a list but was null.", values);
-        Assert.assertEquals("Expected 2 entries but found " + values.size() + " entries.", 2, values.size());
+        assertNotNull("Expected a list but was null.", values);
+        assertEquals("Expected 2 entries but found " + values.size() + " entries.", 2, values.size());
         value = values.get(0);
-        Assert.assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
+        assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
         value = values.get(1);
-        Assert.assertEquals("Expected [" + value2 + "] but found [" + value + ".", value2, value);
+        assertEquals("Expected [" + value2 + "] but found [" + value + ".", value2, value);
 
         repo.addToIndex(key2, value3);
         values = repo.findInIndexes(key2);
-        Assert.assertNotNull("Expected a list but was null.", values);
-        Assert.assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
+        assertNotNull("Expected a list but was null.", values);
+        assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
         value = values.get(0);
-        Assert.assertEquals("Expected [" + value3 + "] but found [" + value + ".", value3, value);
+        assertEquals("Expected [" + value3 + "] but found [" + value + ".", value3, value);
 
-        Assert.assertEquals("Expected 2 entries but found " + repo.getNumberOfIndexes() + ".", 2, repo.getNumberOfIndexes());
+        assertEquals("Expected 2 entries but found " + repo.getNumberOfIndexes() + ".", 2, repo.getNumberOfIndexes());
 
         repo.removeFromIndexes(key2);
 
-        Assert.assertEquals("Expected 1 entries but found " + repo.getNumberOfIndexes() + ".", 1, repo.getNumberOfIndexes());
+        assertEquals("Expected 1 entries but found " + repo.getNumberOfIndexes() + ".", 1, repo.getNumberOfIndexes());
 
         repo.removeFromIndexes(key1, value2);
-        Assert.assertEquals("Expected 1 entries but found " + repo.getNumberOfIndexes() + ".", 1, repo.getNumberOfIndexes());
+        assertEquals("Expected 1 entries but found " + repo.getNumberOfIndexes() + ".", 1, repo.getNumberOfIndexes());
         values = repo.findInIndexes(key1);
-        Assert.assertNotNull("Expected a list but was null.", values);
-        Assert.assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
+        assertNotNull("Expected a list but was null.", values);
+        assertEquals("Expected 1 entry but found " + values.size() + " entries.", 1, values.size());
         value = values.get(0);
-        Assert.assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
+        assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
 
     }
   
@@ -84,8 +85,48 @@ public class RepositoryTest {
         repo.persist(baum2);
 
         List<Neuron> neurons = repo.findByName(baum1.getName());
-        Assert.assertEquals("Expected 1 neurons but found", 2, neurons.size());
+        assertEquals("Expected 1 neurons but found", 2, neurons.size());
 
+    }
+  
+  @Test
+    public void testPersistNeuronWithChildTwoTimes() {
+        Neuron baum_1 = new Text("Baum");
+      Neuron baum_2 = new Text("Baum");
+      Neuron baum_3 = new Text("Baum");
+      Neuron stamm_1 = new Text("Stamm");
+      Neuron stamm_2 = new Text("Stamm");
+      Neuron stamm_3 = new Text("Stamm");
+      
+      Synapse synapse_1 = new Synapse(baum_1, Relation.HAS, stamm_1);
+      Synapse synapse_2 = new Synapse(baum_2, Relation.HAS, stamm_2);
+      Synapse synapse_3 = new Synapse(baum_3, Relation.HAS, stamm_3);
+        
+        assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
+        assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
+
+        repo.persist(synapse_1);
+        repo.persist(synapse_2);
+      repo.persist(synapse_3);
+        
+        assertEquals("Expected 6 indexes in repository but found " + MemoryRepository.getInstance().getNumberOfIndexes() + ".", 6,
+                            MemoryRepository.getInstance().getNumberOfNeurons());
+	     assertEquals("Expected 6 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 6,
+                            MemoryRepository.getInstance().getNumberOfNeurons());
+        assertEquals("Expected 3 synapses in repository but found " + MemoryRepository.getInstance().getNumberOfSynapses() + ".", 3,
+                            MemoryRepository.getInstance().getNumberOfSynapses());
+
+        List<Neuron> neurons = repo.findByName("Baum");
+
+        assertEquals("Expected 3 neurons but found " + neurons.size() + " neurons.", 3, neurons.size());
+
+      for (Neuron neuron : neurons) {
+        assertEquals("Expected 'Baum' but found " + neuron.getName() + ".", "Baum", neuron.getName());
+        assertEquals("Expected 1 Synapse but found " + neuron.getSynapses().size(), 1, neuron.getSynapses().size());
+        Synapse s = neuron.getSynapses().get(0);
+        String childName = s.getChild().getName();        
+        assertEquals("Expected 'Stamm' but found '" + childName + "'.", "Stamm", childName);
+      }
     }
 
     @Test
@@ -96,8 +137,8 @@ public class RepositoryTest {
         Neuron braun = BasicSet.getBraun();
         Neuron gruen = BasicSet.getGruen();
 
-        Assert.assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
-        Assert.assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
+        assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
+        assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
 
         Synapse s1 = new Synapse(baum, Relation.HAS, stamm);
         Synapse s2 = new Synapse(baum, Relation.HAS_MANY, blatt);
@@ -109,28 +150,28 @@ public class RepositoryTest {
         repo.persist(s3);
         repo.persist(s4);
 
-        Assert.assertEquals("Expected 5 indexes in repository but found " + MemoryRepository.getInstance().getNumberOfIndexes() + ".", 5,
+        assertEquals("Expected 5 indexes in repository but found " + MemoryRepository.getInstance().getNumberOfIndexes() + ".", 5,
                             MemoryRepository.getInstance().getNumberOfNeurons());
-	     Assert.assertEquals("Expected 5 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 5,
+	     assertEquals("Expected 5 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 5,
                             MemoryRepository.getInstance().getNumberOfNeurons());
-        Assert.assertEquals("Expected 4 synapses in repository but found " + MemoryRepository.getInstance().getNumberOfSynapses() + ".", 4,
+        assertEquals("Expected 4 synapses in repository but found " + MemoryRepository.getInstance().getNumberOfSynapses() + ".", 4,
                             MemoryRepository.getInstance().getNumberOfSynapses());
 
         List<Neuron> neurons = repo.findByName(baum.getName());
 
-        Assert.assertEquals("Expected 1 neuron but found " + neurons.size() + " neurons.", 1, neurons.size());
+        assertEquals("Expected 1 neuron but found " + neurons.size() + " neurons.", 1, neurons.size());
         Neuron expectedNeuron = neurons.get(0);
-        Assert.assertEquals("Expected name='baum' but found " + expectedNeuron.getName() + ".", baum.getName(), expectedNeuron.getName());
-        Assert.assertNotNull("Expected id but was null", expectedNeuron.getId());
+        assertEquals("Expected name='baum' but found " + expectedNeuron.getName() + ".", baum.getName(), expectedNeuron.getName());
+        assertNotNull("Expected id but was null", expectedNeuron.getId());
 
         List<Synapse> synapses = expectedNeuron.getSynapses();
-        Assert.assertEquals("Expected 4 synapses but found " + synapses.size(), 4, synapses.size());
+        assertEquals("Expected 4 synapses but found " + synapses.size(), 4, synapses.size());
 
         for (Synapse s : synapses) {
-            Assert.assertNotNull("Expected Synapse but was null", s);
+            assertNotNull("Expected Synapse but was null", s);
             Neuron n = s.getChild();
-            Assert.assertNotNull("Expected child Neuron but was null.", n);
-            Assert.assertTrue("Expected a value of a list but found " + n.getName(),
+            assertNotNull("Expected child Neuron but was null.", n);
+            assertTrue("Expected a value of a list but found " + n.getName(),
                               isOneOfThese(n, stamm.getName(), blatt.getName(), gruen.getName(), braun.getName()));
         }
     }

@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MemoryRepository extends ElementValidator implements Repository {
 
     private static MemoryRepository instance;
     // <Name, id>
-    private Map<String, List<IndexEntry>> indexes = new HashMap<String, List<IndexEntry>>();
-    private Map<String, NeuronEntry> neurons = new HashMap<String, NeuronEntry>();
-    private Map<String, SynapseEntry> synapses = new HashMap<String, SynapseEntry>();
+    Map<String, List<IndexEntry>> indexes = new HashMap<String, List<IndexEntry>>();
+    Map<String, NeuronEntry> neurons = new HashMap<String, NeuronEntry>();
+    Map<String, SynapseEntry> synapses = new HashMap<String, SynapseEntry>();
 
     protected MemoryRepository() {
         // Exists only to defeat instantiation.
@@ -40,12 +41,39 @@ public class MemoryRepository extends ElementValidator implements Repository {
 
     @Override
     public Synapse persist(Synapse synapse) {
+      Neuron parent = synapse.getParent();
+      Neuron child = synapse.getChild();
+      System.out.print("+++ ___ MemoryRepository.persist(Synapse): ");
+      System.out.println("Parent has " + parent.getSynapseIds().size() + " SynapseIds.");
+      
+      System.out.print("+++ ___ MemoryRepository.persist(Synapse): ");
+      System.out.println("Child has " + child.getSynapseIds().size() + " SynapseIds.");
+      
+      System.out.print("+++ ___ MemoryRepository.persist(Synapse): ");      
+      System.out.print(parent.getName() + "[" + parent.getId() + "/" + synapse.getParentId() + "] ");
+      System.out.print("[" + synapse.getId() + "] ");
+      System.out.println(child.getName() + "[" + child.getId() + "/" + synapse.getChildId() + "]");
+      
         checkNotNull("Expected Synapse but was null.", synapse);
         addToIndex(synapse.getParent());
         addToIndex(synapse.getChild());
         addToNeurons(synapse.getParent());
         addToNeurons(synapse.getChild());
         addToSynapses(synapse);
+      
+      List<IndexEntry> indexEntries = indexes.get(parent.getName());
+      for (IndexEntry ie : indexEntries) {
+        System.out.println("*** [" + parent.getName() + "]:[" + ie.getForeignKey() + "]");
+      }
+      for (String key : neurons.keySet()) {
+        Neuron n = neurons.get(key).getNeuron();        
+        System.out.println("*** [" + key + "]:[" + n.getName() + "]");
+        for (String synapseId : n.getSynapseIds()) {
+          System.out.println("   *** [" + synapseId + "]");
+        }
+        
+      }
+      
         return synapse;
     }
 
@@ -63,9 +91,12 @@ public class MemoryRepository extends ElementValidator implements Repository {
         List<String> synapseIds = null;
         List<Synapse> synapses = null;
         List<String> neuronIds = findInIndexes(name);
+System.out.println("+++ MemoryRepository.findByName(): found " + neuronIds.size() + " neuronIds.");
         Neuron child = null;
         for (String neuronId : neuronIds) {
             Neuron parent = findInNeurons(neuronId);
+System.out.println("   +++ run " + parent.getName() + " with " + parent.getSynapseIds().size() + " synapses...");
+
             synapseIds = parent.getSynapseIds();
             synapses = findInSynapses(synapseIds);
             for (Synapse synapse : synapses) {
