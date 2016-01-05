@@ -2,14 +2,14 @@ package org.ms.iknow.persistence.repo.memory;
 
 public abstract class Entry {
 
-    private boolean           isLocked = false;
+    private boolean           locked = false;
     private static final long TIME_OUT = 5000L;
     private static final long DELAY    = 2L;
 
     public void lock() {
         int delay = 0;
         while (delay < TIME_OUT) {
-            if (isLocked) {
+            if (this.locked) {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException e) {
@@ -17,7 +17,7 @@ public abstract class Entry {
                 }
                 delay += DELAY;
             } else {
-                isLocked = true;
+                this.locked = true;
                 return;
             }
         }
@@ -25,10 +25,10 @@ public abstract class Entry {
     }
 
     public void unlock() {
-        isLocked = false;
+        this.locked = false;
     }
 
     public boolean isLocked() {
-        return isLocked;
+        return this.locked;
     }
 }

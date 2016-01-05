@@ -2,7 +2,6 @@ package org.ms.iknow.service.rest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.ms.iknow.core.service.CoreStatementService;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
@@ -26,19 +25,16 @@ import javax.ws.rs.core.MediaType;
 @Path("/Statement")
 public class StatementService {
 
-    private CoreStatementService service;
-
     // This method is called if TEXT_PLAIN is request
     @GET
     @Path("{entity1}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response statement(@PathParam("entity1") String entity1) {
         Text neuron = new Text(entity1);
-        service = new CoreStatementService();
-        service.persist(neuron);
+        MemoryRepository.getInstance().persist(neuron);
 
         // read for response
-        List<Neuron> neurons = service.findByName(entity1);
+        List<Neuron> neurons = MemoryRepository.getInstance().findByName(entity1);
         return Response.ok(neurons).build();
     }
 
@@ -49,24 +45,16 @@ public class StatementService {
     public Response createStatement(@PathParam("entity1") String entity1,
                               @PathParam("relation") String relation,
                               @PathParam("entity2") String entity2) {
-        service = new CoreStatementService();
         Text parent = new Text(entity1);
         Text child = new Text(entity2);
         Relation r = Relation.getRelation(relation);
         Synapse synapse = new Synapse(parent, r, child);
-        service.persist(synapse);
+        MemoryRepository.getInstance().persist(synapse);
 
-        // read for response
-        System.out.println("+++ found " + MemoryRepository.getInstance().getNumberOfNeurons() + " neurons in Repo.");
-      System.out.println("+++ found " + MemoryRepository.getInstance().getNumberOfSynapses() + " synapses in Repo.");
-      System.out.println("+++ found " + MemoryRepository.getInstance().getNumberOfIndexes() + " indexes in Repo.");
-      
-      
-        List<Neuron> neurons = service.findByName(entity1);
+        List<Neuron> neurons = MemoryRepository.getInstance().findByName(entity1);
         List<StatementEntry> entries = new ArrayList<StatementEntry>();
         StatementEntry entry = null;
         for (Neuron n : neurons) {
-          System.out.println("+++ --- found " + n.getName() + " with " + n.getSynapses().size() + " synapses.");
             for (Synapse s : n.getSynapses()) {
                 entry = new StatementEntry();
                 entry.setParentName(n.getName());
@@ -77,19 +65,6 @@ public class StatementService {
         }
       return Response.status(200).entity(entries).build();
     }
-  
-  void printNeurons(List<Neuron> neurons) {
-    for (Neuron parent : neurons) {
-      System.out.println("+++ Id[" + parent.getId() + "], name=" + parent.getName() + ".");
-      printSynapses(parent.getSynapses());
-    }
-  }
-  
-  void printSynapses(List<Synapse> synapses) {
-    for (Synapse s : synapses) {
-      System.out.println("   +++ Id[" + s.getId() + "]: " + s.getRelation() + " " + s.getChild().getName());
-    }
-  }
   
     List<StatementEntry> toList(List<Neuron> neurons) {
         List<StatementEntry> table = new ArrayList<StatementEntry>();

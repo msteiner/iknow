@@ -24,8 +24,9 @@ public class Synapse extends ElementBase {
     }
 
     private void initPair(Neuron parent, Relation relation, Neuron child, int weight) {
-        parent.getSynapseIds().add(this.id);
-        setParent(parent);
+        //parent.getSynapseIds().add(this.id);
+      parent.addSynapse(this);  
+      setParent(parent);
         setChild(child);
         this.relation = relation;
         this.weight = weight;
@@ -90,14 +91,14 @@ public class Synapse extends ElementBase {
 
         builder.append("\n  " + this.getClass().getName() + "\n");
         builder.append(super.toString() + "\n");
-        builder.append("  neuron1Id = " + parentId + "\n");
-        builder.append("  neuron2Id = " + childId + "\n");
+        builder.append("  parentId   = " + parentId + "\n");
+        builder.append("  childId    = " + childId + "\n");
         if (relation != null) {
-            builder.append("  relation = " + relation.getValue() + "\n");
+            builder.append("  relation   = " + relation.getValue() + "\n");
         } else {
-            builder.append("  relation = null\n");
+            builder.append("  relation   = null\n");
         }
-        builder.append("  weight = " + weight + "\n");
+        builder.append("  weight     = " + weight + "\n");
 
         return builder.toString();
     }

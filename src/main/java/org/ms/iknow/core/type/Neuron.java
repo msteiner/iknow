@@ -25,12 +25,22 @@ public abstract class Neuron extends ElementBase {
     }
 
     public void addSynapse(Synapse synapse) {
-        //if (!synapseIds.contains(synapse.getId())) {
-        //    synapseIds.add(synapse.getId());
-        //}
-        synapseIds.add(synapse.getId());
-        synapses.add(synapse);
+        if (!synapseIds.contains(synapse.getId())) {
+            synapseIds.add(synapse.getId());
+        }        
+        if (!contains(synapse.getId())) {
+            synapses.add(synapse);
+        }
         setChangeDate();
+    }
+  
+    boolean contains(String id) {
+        for (Synapse s : synapses) {
+            if (s.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
   
     public void removeAllSynapses() {

@@ -2,6 +2,7 @@ package org.ms.iknow.service.rest;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
@@ -35,14 +36,14 @@ public class StatementServiceTest {
         assertNotNull("Expected entries but was null.", entries);
         assertEquals("Expected 1 entry but found " + entries.size() + ".", 1, entries.size());
         assertResponse(entries.get(0), NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
-      
-      response = statementService.createStatement(NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
+
+        response = statementService.createStatement(NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
         entries = (List<StatementEntry>)response.getEntity();
         assertNotNull("Expected entries but was null.", entries);
         assertEquals("Expected 2 entry but found " + entries.size() + ".", 2, entries.size());
         assertResponse(entries.get(0), NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
-      assertResponse(entries.get(1), NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
-    
+        assertResponse(entries.get(1), NEURON_PARENT_NAME, NEURON_RELATION, NEURON_CHILD_NAME);
+
     }
 
     void assertResponse(StatementEntry entry, String parentName, String relation, String childName) {

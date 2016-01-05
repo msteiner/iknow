@@ -70,7 +70,7 @@ public class RepositoryTest {
         assertEquals("Expected [" + value1 + "] but found [" + value + ".", value1, value);
 
     }
-  
+
     @Test
     public void testNeuronsCRUD() {
 
@@ -88,45 +88,65 @@ public class RepositoryTest {
         assertEquals("Expected 1 neurons but found", 2, neurons.size());
 
     }
-  
-  @Test
+
+    @Test
     public void testPersistNeuronWithChildTwoTimes() {
         Neuron baum_1 = new Text("Baum");
-      Neuron baum_2 = new Text("Baum");
-      Neuron baum_3 = new Text("Baum");
-      Neuron stamm_1 = new Text("Stamm");
-      Neuron stamm_2 = new Text("Stamm");
-      Neuron stamm_3 = new Text("Stamm");
-      
-      Synapse synapse_1 = new Synapse(baum_1, Relation.HAS, stamm_1);
-      Synapse synapse_2 = new Synapse(baum_2, Relation.HAS, stamm_2);
-      Synapse synapse_3 = new Synapse(baum_3, Relation.HAS, stamm_3);
-        
+        Neuron baum_2 = new Text("Baum");
+        Neuron baum_3 = new Text("Baum");
+        Neuron stamm_1 = new Text("Stamm");
+        Neuron stamm_2 = new Text("Stamm");
+        Neuron stamm_3 = new Text("Stamm");
+
+        Synapse synapse_1 = new Synapse(baum_1, Relation.HAS, stamm_1);
+        Synapse synapse_2 = new Synapse(baum_2, Relation.HAS, stamm_2);
+        Synapse synapse_3 = new Synapse(baum_3, Relation.HAS, stamm_3);
+
         assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
         assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
 
         repo.persist(synapse_1);
         repo.persist(synapse_2);
-      repo.persist(synapse_3);
-        
+        repo.persist(synapse_3);
+
         assertEquals("Expected 6 indexes in repository but found " + MemoryRepository.getInstance().getNumberOfIndexes() + ".", 6,
-                            MemoryRepository.getInstance().getNumberOfNeurons());
-	     assertEquals("Expected 6 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 6,
-                            MemoryRepository.getInstance().getNumberOfNeurons());
+                     MemoryRepository.getInstance().getNumberOfNeurons());
+        assertEquals("Expected 6 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 6,
+                     MemoryRepository.getInstance().getNumberOfNeurons());
         assertEquals("Expected 3 synapses in repository but found " + MemoryRepository.getInstance().getNumberOfSynapses() + ".", 3,
-                            MemoryRepository.getInstance().getNumberOfSynapses());
+                     MemoryRepository.getInstance().getNumberOfSynapses());
 
+        // 1. Test on tables
+        for (String key : MemoryRepository.getInstance().neurons.keySet()) {
+            Neuron n = MemoryRepository.getInstance().neurons.get(key).getNeuron();
+            System.out.println("   +++ [" + key + "]:[" + n.getName() + "]");
+            if (n.getName().equals("Baum")) {
+                assertEquals("Expected 1 synapseId but found " + n.getSynapseIds().size(), 1, n.getSynapseIds().size());
+                for (String synapseId : n.getSynapseIds()) {
+
+                    SynapseEntry synapseEntry = MemoryRepository.getInstance().synapses.get(synapseId);
+                    Synapse synapse = synapseEntry.getSynapse();
+                    Neuron child = MemoryRepository.getInstance().neurons.get(synapse.getChildId()).getNeuron();
+                    System.out.println("      +++ " + synapse.getRelation() + " " + child.getName() + "[" + child.getId() + "]");
+                    assertEquals("Expected child name [Stamm] but found " + child.getName(), "Stamm", child.getName());
+                }
+            } else if (n.getName().equals("Stamm")) {
+                assertEquals("Expected 0 synapseId but found " + n.getSynapseIds().size(), 0, n.getSynapseIds().size());
+            } else {
+                fail("Expected [Baum] or [Stamm] but found " + n.getName());
+            }
+        }
+
+        // 2. Test on search
         List<Neuron> neurons = repo.findByName("Baum");
-
         assertEquals("Expected 3 neurons but found " + neurons.size() + " neurons.", 3, neurons.size());
-
-      for (Neuron neuron : neurons) {
-        assertEquals("Expected 'Baum' but found " + neuron.getName() + ".", "Baum", neuron.getName());
-        assertEquals("Expected 1 Synapse but found " + neuron.getSynapses().size(), 1, neuron.getSynapses().size());
-        Synapse s = neuron.getSynapses().get(0);
-        String childName = s.getChild().getName();        
-        assertEquals("Expected 'Stamm' but found '" + childName + "'.", "Stamm", childName);
-      }
+        for (Neuron neuron : neurons) {
+            assertEquals("Expected 'Baum' but found " + neuron.getName() + ".", "Baum", neuron.getName());
+            assertEquals("Expected 1 Synapse but found " + neuron.getSynapses().size(), 1, neuron.getSynapses().size());
+            Synapse s = neuron.getSynapses().get(0);
+            String childName = s.getChild().getName();
+            assertEquals("Expected 'Stamm' but found '" + childName + "'.", "Stamm", childName);
+        }
     }
 
     @Test
@@ -151,11 +171,11 @@ public class RepositoryTest {
         repo.persist(s4);
 
         assertEquals("Expected 5 indexes in repository but found " + MemoryRepository.getInstance().getNumberOfIndexes() + ".", 5,
-                            MemoryRepository.getInstance().getNumberOfNeurons());
-	     assertEquals("Expected 5 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 5,
-                            MemoryRepository.getInstance().getNumberOfNeurons());
+                     MemoryRepository.getInstance().getNumberOfNeurons());
+        assertEquals("Expected 5 neurons in repository but found " + MemoryRepository.getInstance().getNumberOfNeurons() + ".", 5,
+                     MemoryRepository.getInstance().getNumberOfNeurons());
         assertEquals("Expected 4 synapses in repository but found " + MemoryRepository.getInstance().getNumberOfSynapses() + ".", 4,
-                            MemoryRepository.getInstance().getNumberOfSynapses());
+                     MemoryRepository.getInstance().getNumberOfSynapses());
 
         List<Neuron> neurons = repo.findByName(baum.getName());
 
@@ -172,7 +192,7 @@ public class RepositoryTest {
             Neuron n = s.getChild();
             assertNotNull("Expected child Neuron but was null.", n);
             assertTrue("Expected a value of a list but found " + n.getName(),
-                              isOneOfThese(n, stamm.getName(), blatt.getName(), gruen.getName(), braun.getName()));
+                       isOneOfThese(n, stamm.getName(), blatt.getName(), gruen.getName(), braun.getName()));
         }
     }
 

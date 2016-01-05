@@ -7,6 +7,7 @@ import org.ms.iknow.persistence.repo.Repository;
 
 import java.util.List;
 
+@Deprecated
 public class CoreStatementService {
 
     private Repository repository = MemoryRepository.getInstance();
