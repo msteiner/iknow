@@ -25,11 +25,11 @@
 				</table>
 			</div>
 			<br>
-			<form ng-hide="hideform">
+			<form ng-show="showImproveRange">
 				<h3>Kannst du mir etwas über '{{parent}}' sagen?</h3>
 				<textarea class="w3-input w3-border" ng-model="additions" placeholder="ist gross, hat rad, ..."></textarea>
 				<br>
-				<button class="bt-standard, w3-border" ng-click="saveAnswers(question.id)" ng-disabled="incomplete">&#10004; Save Changes</button>
+				<button class="bt-standard, w3-border" ng-click="saveAnswers(question.id)" ng-enabled="complete">&#10004; Save Changes</button>
 			</form>
 		</div>
 		<script src= "./js/controller/QuestionController.js"></script>

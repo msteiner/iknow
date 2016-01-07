@@ -16,13 +16,13 @@ $scope.questions = [
 ];
 $scope.edit = true;
 $scope.error = false;
-$scope.incomplete = false; 
-$scope.hideform = true; 
+$scope.complete = false; 
+$scope.showImproveRange = false; 
 $scope.currentId = '';
 $scope.currentParent = '';
 
 $scope.answer = function(id, isTrue) {
-	$scope.hideform = true;
+	$scope.showImproveRange = false;
 	if (isTrue) {
 		alert("Thank you for your confirmation!");
 	}
@@ -37,21 +37,16 @@ $scope.answer = function(id, isTrue) {
 $scope.editAnswer = function(id, parentName) {
 	$scope.currentId = id;
 	$scope.currentParent = parentName;
-    $scope.hideform = false;
+    $scope.showImproveRange = true;
 	$scope.parent = $scope.questions[id-1].parent;
 	$scope.child = $scope.questions[id-1].child; 
 };
 
 $scope.saveAnswers = function(id) {
 	$scope.test();
-	if ($scope.incomplete == true) {		
-		$scope.hideform = true;
-	}
-	else {
-		
-	}
-	// make a server request
-	if ($scope.incomplete == true) {		
+	if ($scope.complete == true) {		
+		$scope.showImproveRange = false;
+		// make a server request
 		var url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/' + $scope.currentId + '/' + "TEST_USER" + '/' + $scope.additions;
 	    $http.get(url)
 	      .success(function (data) {
@@ -61,17 +56,16 @@ $scope.saveAnswers = function(id) {
 	      $scope.errorMessage = "Couldn't load the list of statements, error # " + status;
 	      alert('errorMessage=' + $scope.errorMessage);
 	    });
-    }
-	// TODO remove doesn't works!
+		$scope.additions = '';
+	}
 	$scope.questions.slice(id-1, 1);
-	$scope.additions = '';
-	$scope.incomplete = false;
 };
 
 $scope.test = function() {
-	$scope.incomplete = false;
-	if (!$scope.additions.length == 0) {
-		$scope.incomplete = true;
+	alert($scope.additions.length);
+	$scope.complete = true;
+	if ($scope.additions.length == 0) {
+		$scope.complete = false;
 	}
 };
 
