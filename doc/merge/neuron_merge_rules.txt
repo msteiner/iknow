@@ -1,6 +1,9 @@
 Projekt: IKnow
 Autor  : Mark Steiner
 
+Changes
+01.12.2015	Mark		Initial version
+
 
 
 Merge- Regeln für Neuronen

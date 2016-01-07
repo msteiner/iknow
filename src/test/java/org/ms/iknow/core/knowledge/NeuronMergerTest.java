@@ -7,7 +7,7 @@ public class NeuronMergerTest extends DataTest {
   
   @Before
   void init() {
-    importData(fileName);
+    //importData(fileName);
   }
   
   

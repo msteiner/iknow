@@ -2,6 +2,7 @@ package org.ms.iknow.persistence.repo;
 
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Synapse;
+import org.ms.iknow.core.type.question.Question;
 
 import java.util.List;
 
@@ -23,6 +24,12 @@ public interface Repository {
     public List<Synapse> persist(List<Synapse> synapses);
 
     public List<Neuron> findByName(String name);
+  
+    public void createQuestion(Question question);
+  
+    public List<Question> getQuestions();
+  
+    public void deleteQuestion(String key);
 
     public void deleteAll();
 }

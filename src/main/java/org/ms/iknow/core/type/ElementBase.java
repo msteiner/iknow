@@ -3,7 +3,7 @@ package org.ms.iknow.core.type;
 import java.util.Date;
 import java.util.UUID;
 
-abstract class ElementBase {
+public abstract class ElementBase implements Cloneable {
 
     protected String  id;
     protected String  createUser;
@@ -21,6 +21,10 @@ abstract class ElementBase {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCreateUser() {

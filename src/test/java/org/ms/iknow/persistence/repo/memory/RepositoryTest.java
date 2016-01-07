@@ -119,7 +119,6 @@ public class RepositoryTest {
         // 1. Test on tables
         for (String key : MemoryRepository.getInstance().neurons.keySet()) {
             Neuron n = MemoryRepository.getInstance().neurons.get(key).getNeuron();
-            System.out.println("   +++ [" + key + "]:[" + n.getName() + "]");
             if (n.getName().equals("Baum")) {
                 assertEquals("Expected 1 synapseId but found " + n.getSynapseIds().size(), 1, n.getSynapseIds().size());
                 for (String synapseId : n.getSynapseIds()) {
@@ -127,7 +126,6 @@ public class RepositoryTest {
                     SynapseEntry synapseEntry = MemoryRepository.getInstance().synapses.get(synapseId);
                     Synapse synapse = synapseEntry.getSynapse();
                     Neuron child = MemoryRepository.getInstance().neurons.get(synapse.getChildId()).getNeuron();
-                    System.out.println("      +++ " + synapse.getRelation() + " " + child.getName() + "[" + child.getId() + "]");
                     assertEquals("Expected child name [Stamm] but found " + child.getName(), "Stamm", child.getName());
                 }
             } else if (n.getName().equals("Stamm")) {

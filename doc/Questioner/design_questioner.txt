@@ -1,0 +1,76 @@
+Projekt: IKnow
+Autor  : Mark Steiner
+
+Changes
+00.01		04.01.2016		Mark		Initial version
+
+QUESTIONER
+================================================================================
+
+Problemstellung
+--------------------------------------------------------------------------------
+IKnow muss in der Lage sein, internes Wissen zu hinterfragen und zu erweitern.
+Dies wird umgesetzt, indem IKnow Fragen stellen und mögliche Antworten abholen
+kann.
+
+
+Beschreibung
+--------------------------------------------------------------------------------
+Der Questioner stellt die Basisfunktionalitäten zur Erfassung von Antworten auf 
+gestellte Fragen zur Verfügung. Er besteht aus folgenden Modulen:
+
+- UI: Stellen der Fragen und Erfassen der Antworten.
+- UI- Controller: Manager für oben genannte UI.
+- Merger: Trigger für Erfassung der Fragen sowie das Einarbeiten der Antworten.
+- Questioner: Serverseitiger Manager.
+- Repository: Verwaltung der Fragen bis zur Beantwortung derselben.
+
+-----------     -----------     -----------     -----------     ----------- 
+|   UI          |UI-Control     |  Merger       |Questioner     |Repository
+-----------     -----------     -----------     -----------     ----------- 
+     .               .               |---createQ.--->|               .
+     .               .               |               |---createQ.--->|
+     .               .               .               .               .
+     .               .               .               .               .
+     |---getQuest.-->|               .               .               .
+     |               |-----------getQuest.---------->|               .
+     |               |               .               |---getQuest.-->|
+     |               |               .               |<--questions---|
+     |               |<----------questions-----------|               .
+     |<--questions---|               .               .               .
+     .               .               .               .               .
+     .               .               .               .               .
+     |---setAnsw.--->|               .               .               .
+     |               |-----------setAnsw.----------->|               .
+     |               |               .               |---delQuest.-->|
+     |               |               |<--setKnowl.---|               .
+     |               |<----------feedback------------|               .
+     |<--feedback----|               .               .               .
+     .               .               .               .               .
+
+
+Entities
+--------------------------------------------------------------------------------
+Question(nicht normalisiert)
+................................................................................
+.Attribut     .Type    .Beschreibung                                           .
+................................................................................
+.questionId   .String  .Id der Question.                                       .
+.parentId     .String  .Id des Neurons, zu dem gefragt wird.                   .
+.parentName   .String  .Name des Neurons, zu dem gefragt wird.                 .
+.relation     .String  .Id der Relation, welche Parent und Child verbindet.    .
+.childId      .String  .Id des Neurons, welches zugeordnet werden soll.        .
+.childName    .String  .Name des Neurons, welches zugeordnet werden soll.      .
+.createDate   .Date    .createDate der Frage.                                  .
+................................................................................
+
+Answer(nicht normalisiert)
+................................................................................
+.Attribut     .Type    .Beschreibung                                           .
+................................................................................
+.questionId   .String  .Id der Question.                                       .
+.answers      .List    .List of <relation, childId, childName>                   .
+................................................................................
+
+
+

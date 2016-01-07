@@ -3,6 +3,7 @@ package org.ms.iknow.persistence.repo.memory;
 import org.ms.iknow.core.assertion.ElementValidator;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Synapse;
+import org.ms.iknow.core.type.question.Question;
 import org.ms.iknow.persistence.repo.Repository;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class MemoryRepository extends ElementValidator implements Repository {
     Map<String, List<IndexEntry>> indexes = new HashMap<String, List<IndexEntry>>();
     public Map<String, NeuronEntry> neurons = new HashMap<String, NeuronEntry>();
     Map<String, SynapseEntry> synapses = new HashMap<String, SynapseEntry>();
+    Map<String, QuestionEntry> questions = new HashMap<String, QuestionEntry>();
 
     protected MemoryRepository() {
         // Exists only to defeat instantiation.
@@ -207,6 +209,7 @@ public class MemoryRepository extends ElementValidator implements Repository {
         neurons.clear();
         synapses.clear();
         indexes.clear();
+        questions.clear();
     }
 
     public int getNumberOfNeurons() {
@@ -219,5 +222,29 @@ public class MemoryRepository extends ElementValidator implements Repository {
   
     public int getNumberOfIndexes() {
         return indexes.size();
+    }
+
+    @Override
+    public void createQuestion(Question question) {
+        QuestionEntry entry = new QuestionEntry();
+        Question clone = (Question)question.clone();
+        entry.lock();
+        entry.setQuestion(clone);
+        entry.unlock();
+        questions.putIfAbsent(question.getId(), entry);
+    }
+
+    @Override
+    public List<Question> getQuestions() {
+        List<Question> entries = new ArrayList<Question>();
+        for (String key : questions.keySet()) {
+            entries.add(questions.get(key).getQuestion());
+        }
+        return entries;
+    }
+
+    @Override
+    public void deleteQuestion(String key) {
+        questions.remove(key);
     }
 }
