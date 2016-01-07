@@ -25,7 +25,27 @@ public class QuestionService {
     }
   
     @GET
-    @Path("{questionId}/{userId}/{statements}")
+    @Path("approve/{questionId}/{userId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response setApproval(@PathParam("questionId") String questionId,
+                              @PathParam("userId") String userId) {
+        //questioner.setAnswers(questionId, userId, statements);
+        System.out.println("Approval for questionId=[" + questionId + "], userId=[" + userId + "].");
+        return Response.status(200).entity("Everything's fine.").build();
+    }
+  
+    @GET
+    @Path("disapprove/{questionId}/{userId}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response setDisapproval(@PathParam("questionId") String questionId,
+                              @PathParam("userId") String userId) {
+        //questioner.setAnswers(questionId, userId, statements);
+        System.out.println("Disapproval for questionId=[" + questionId + "], userId=[" + userId + "].");
+        return Response.status(200).entity("Everything's fine.").build();
+    }
+  
+    @GET
+    @Path("improve/{questionId}/{userId}/{statements}")
     @Produces(MediaType.TEXT_HTML)
     public Response setAnswer(@PathParam("questionId") String questionId,
                               @PathParam("userId") String userId,
