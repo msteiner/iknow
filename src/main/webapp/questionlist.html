@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="./css/iknow.css">
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
    </head>
-	<body ng-app="myApp" ng-controller="questionCtrl">
+	<body ng-app="iknow_app" ng-controller="question_ctrl">
 		<div class="w3-container">
 			<h3>Fragen</h3>
 			<div class="sb-questions">
@@ -15,12 +15,12 @@
 					<th class="colsize-s1"></th>
 					<th class="colsize-s1"></th>
 					<th></th>
-				  	</tr>
-				  	<tr ng-repeat="question in questions">
-                 <td class="colsize-s1, w3-text-green"><a ng-href="#" ng-click="answer(question.id, true)">&#10004;</a></td>
-                 <td class="colsize-s1, w3-text-red"><a ng-href="#" ng-click="answer(question.id, false)">&#10006;</a></td>
-                 <td class="colsize-s1"><a ng-href="#" ng-click="editAnswer(question.id, question.parent)">&#9998;</a></td>
-                 <td>{{question.parent}}</td>
+				  </tr>
+				  <tr ng-repeat="question in questions">
+					<td class="colsize-s1, w3-text-green"><a ng-href="#" ng-click="answer(question.id, true)">&#10004;</a></td>
+					<td class="colsize-s1, w3-text-red"><a ng-href="#" ng-click="answer(question.id, false)">&#10006;</a></td>
+					<td class="colsize-s1"><a ng-href="#" ng-click="editAnswer(question.id, question.parent)">&#9998;</a></td>
+					<td>{{question.parent}}</td>
 					</tr>
 				</table>
 			</div>
@@ -29,9 +29,9 @@
 				<h3>Kannst du mir etwas über '{{parent}}' sagen?</h3>
 				<textarea class="w3-input w3-border" ng-model="additions" placeholder="ist gross, hat rad, ..."></textarea>
 				<br>
-				<button class="bt-standard, w3-border" ng-click="saveAnswers(id)" ng-disabled="incomplete">&#10004; Save Changes</button>
+				<button class="bt-standard, w3-border" ng-click="saveAnswers(question.id)" ng-disabled="incomplete">&#10004; Save Changes</button>
 			</form>
 		</div>
-		<script src= "./js/controller/questionController.js"></script>
+		<script src= "./js/controller/QuestionController.js"></script>
 	</body>
 </html>

@@ -14,21 +14,26 @@ public class Answer extends ElementBase {
         return entries;
     }
 
-    public void addAnswerEntry(Relation relation, String childId, String childName) {
-        entries.add(new AnswerEntry(relation, childId, childName));
+    public void addAnswerEntry(String questionId, Relation relation, String childId, String childName) {
+        entries.add(new AnswerEntry(questionId, relation, childId, childName));
     }
 
     class AnswerEntry {
+        String questionId;
         Relation relation;
         String   childId;
         String   childName;
 
-        public AnswerEntry(Relation relation, String childId, String childName) {
+        public AnswerEntry(String questionId, Relation relation, String childId, String childName) {
+            this.questionId = questionId;
             this.relation = relation;
             this.childId = childId;
             this.childName = childName;
         }
 
+        public String getQuestionId() {
+          return questionId;
+        }
         public Relation getRelation() {
             return relation;
         }
@@ -44,6 +49,9 @@ public class Answer extends ElementBase {
         public String toString() {
             StringBuilder builder = new StringBuilder();
 
+            builder.append("        Answer.AnswerEntry:" + questionId + "\n");
+            builder.append("        -------------------" + questionId + "\n");
+            builder.append("        questionId = " + questionId + "\n");           
             builder.append("        relation   = " + relation + "\n");
             builder.append("        childId    = " + childId + "\n");
             builder.append("        childName  = " + childName + "\n");

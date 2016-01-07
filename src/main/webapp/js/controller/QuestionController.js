@@ -1,4 +1,7 @@
-angular.module('myApp', []).controller('questionCtrl', function($scope) {
+/*globals angular */
+/*eslint-env browser */
+var app = angular.module('iknow_app',[]);
+app.controller('question_ctrl', function($scope, $location, $http) {
 $scope.parent = '';
 $scope.relation = '';
 $scope.child = '';
@@ -28,23 +31,15 @@ $scope.answer = function(id, isTrue) {
 	}
 	// make a server request
 	// TODO remove doesn't works!
-	questions.slice(id-1, 1);
+	$scope.questions.slice(id-1, 1);
 };
 
 $scope.editAnswer = function(id, parentName) {
 	$scope.currentId = id;
 	$scope.currentParent = parentName;
     $scope.hideform = false;
-    if (id == 'new') {
-		$scope.edit = true;
-		$scope.incomplete = true;
-		$scope.parent = '';
-		$scope.child = '';
-    } else {
-		$scope.edit = false;
-		$scope.parent = $scope.questions[id-1].parent;
-		$scope.child = $scope.questions[id-1].child; 
-	}
+	$scope.parent = $scope.questions[id-1].parent;
+	$scope.child = $scope.questions[id-1].child; 
 };
 
 $scope.saveAnswers = function(id) {
@@ -52,10 +47,25 @@ $scope.saveAnswers = function(id) {
 	if ($scope.incomplete == true) {		
 		$scope.hideform = true;
 	}
+	else {
+		
+	}
 	// make a server request
+	if ($scope.incomplete == true) {		
+		var url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/' + $scope.currentId + '/' + "TEST_USER" + '/' + $scope.additions;
+	    $http.get(url)
+	      .success(function (data) {
+	      //$scope.facts = data;
+	    })
+	    .error(function (data, status, headers, config) {
+	      $scope.errorMessage = "Couldn't load the list of statements, error # " + status;
+	      alert('errorMessage=' + $scope.errorMessage);
+	    });
+    }
 	// TODO remove doesn't works!
 	$scope.questions.slice(id-1, 1);
 	$scope.additions = '';
+	$scope.incomplete = false;
 };
 
 $scope.test = function() {

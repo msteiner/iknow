@@ -22,4 +22,8 @@ public class Questioner {
   public void setAnswers(Answer answer) {
     // TODO implement
   }
+  
+  public void setAnswers(String questionId, String userId, String statements) {
+    // TODO implement
+  }
 }

@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/Question")
@@ -24,12 +25,13 @@ public class QuestionService {
     }
   
     @GET
-    @Path("{parent}/{relation}/{child}")
-    @Produces("application/json")
-    public Response setAnswer(@PathParam("parent") String parent,
-                              @PathParam("relation") String relation,
-                              @PathParam("child") String child) {
-        // TODO implement
-      return Response.status(200).entity("Everything's fine.").build();
+    @Path("{questionId}/{userId}/{statements}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response setAnswer(@PathParam("questionId") String questionId,
+                              @PathParam("userId") String userId,
+                              @PathParam("statements") String statements) {
+        questioner.setAnswers(questionId, userId, statements);
+        System.out.println("questionId=[" + questionId + "], userId=[" + userId + "], statements=[" + statements + "].");
+        return Response.status(200).entity("Everything's fine.").build();
     }
 }
