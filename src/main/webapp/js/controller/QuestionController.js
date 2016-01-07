@@ -16,41 +16,25 @@ $scope.questions = [
 ];
 $scope.edit = true;
 $scope.error = false;
+$scope.successMessage;
+$scope.errorMessage;
 $scope.complete = false; 
 $scope.showImproveRange = false; 
 $scope.currentId = '';
 $scope.currentParent = '';
 
 $scope.answer = function(id, isTrue) {
-	//$scope.currentId = id;
+	var url;
 	$scope.showImproveRange = false;
 	if (isTrue) {
-		$scope.showImproveRange = false;
-		// make a server request
-		var url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/approve/' + id + '/' + "TEST_USER";
-	    $http.get(url)
-	      .success(function (data) {
-	      //$scope.facts = data;
-	    })
-	    .error(function (data, status, headers, config) {
-	      $scope.errorMessage = "Couldn't load the list of statements, error # " + status;
-	      alert('errorMessage=' + $scope.errorMessage);
-	    });
+		url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/approve/' + id + '/' + "TEST_USER";
+		$scope.createApprovalRequest(url);	    
 		alert("Thank you for your confirmation!");
 	}
 	else {
-		$scope.showImproveRange = false;
 		// make a server request
-		var url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/disapprove/' + id + '/' + "TEST_USER";
-		alert(url);
-	    $http.get(url)
-	      .success(function (data) {
-	      //$scope.facts = data;
-	    })
-	    .error(function (data, status, headers, config) {
-	      $scope.errorMessage = "Couldn't load the list of statements, error # " + status;
-	      alert('errorMessage=' + $scope.errorMessage);
-	    });
+		url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/disapprove/' + id + '/' + "TEST_USER";
+		$scope.createApprovalRequest(url);
 		alert("Ups. Not...? - Thanks anyway...");
 	}
 	// make a server request
@@ -85,8 +69,15 @@ $scope.saveAnswers = function(id) {
 	$scope.questions.slice(id-1, 1);
 };
 
-$scope.createApprovalRequest() = function(url) {
-	
+$scope.createApprovalRequest = function(url) {
+	$http.get(url)
+    .success(function (data) {
+      $scope.successMessage = data;
+    })
+    .error(function (data, status, headers, config) {
+      $scope.errorMessage = "Couldn't load the list of statements, error # " + status;
+      alert('errorMessage=' + $scope.errorMessage);
+    });
 };
 
 $scope.test = function() {
