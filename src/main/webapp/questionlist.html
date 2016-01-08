@@ -15,23 +15,23 @@
 					<th class="colsize-s1"></th>
 					<th class="colsize-s1"></th>
 					<th></th>
-				  	</tr>
-				  	<tr ng-repeat="question in questions">
-                 <td class="colsize-s1, w3-text-green"><a ng-href="#" ng-click="answer(question.id, true)">&#10004;</a></td>
-                 <td class="colsize-s1, w3-text-red"><a ng-href="#" ng-click="answer(question.id, false)">&#10006;</a></td>
-                 <td class="colsize-s1"><a ng-href="#" ng-click="editAnswer(question.id, question.parent)">&#9998;</a></td>
-                 <td>{{question.parent}}</td>
+				  </tr>
+				  <tr ng-repeat="question in questions">
+					<td class="colsize-s1, w3-text-green"><a ng-href="#" ng-click="createApprovalRequest(question.id)">&#10004;</a></td>
+					<td class="colsize-s1, w3-text-red"><a ng-href="#" ng-click="createDisapprovalRequest(question.id)">&#10006;</a></td>
+					<td class="colsize-s1"><a ng-href="#" ng-click="editAnswer(question.id, question.parent)">&#9998;</a></td>
+					<td>{{question.parent}}</td>
 					</tr>
 				</table>
 			</div>
 			<br>
-			<form ng-hide="hideform">
+			<form ng-show="showImproveRange">
 				<h3>Kannst du mir etwas über '{{parent}}' sagen?</h3>
 				<textarea class="w3-input w3-border" ng-model="additions" placeholder="ist gross, hat rad, ..."></textarea>
 				<br>
-				<button class="bt-standard, w3-border" ng-click="saveAnswers(id)" ng-disabled="incomplete">&#10004; Save Changes</button>
+				<button class="bt-standard, w3-border" ng-click="saveAnswers(question.id)" ng-enabled="complete">&#10004; Save Changes</button>
 			</form>
 		</div>
-		<script src= "./js/controller/questionController.js"></script>
+		<script src= "./js/controller/QuestionController.js"></script>
 	</body>
 </html>
