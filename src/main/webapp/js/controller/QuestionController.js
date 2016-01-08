@@ -32,12 +32,10 @@ $scope.answer = function(id, isTrue) {
 		alert("Thank you for your confirmation!");
 	}
 	else {
-		// make a server request
 		url = "http://" + $location.host() + ":" + $location.port() + '/rest/Question/disapprove/' + id + '/' + "TEST_USER";
 		$scope.createApprovalRequest(url);
 		alert("Ups. Not...? - Thanks anyway...");
 	}
-	// make a server request
 	// TODO remove doesn't works!
 	$scope.questions.slice(id-1, 1);
 };

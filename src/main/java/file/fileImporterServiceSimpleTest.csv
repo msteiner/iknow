@@ -1,6 +1,0 @@
-Baum;1;Ast
-Ast;2;Blatt
-Ast;2;Gabel
-Blatt;2;Rand
-Rad;5;Auto
-Auto;1;Fahrzeug
