@@ -23,7 +23,7 @@ public abstract class DataTest {
     List<StatementEntry> entries = fileImporterService.readNeurons(fileName);
     for (StatementEntry entry : entries) {
       Neuron parent = new Text(entry.getParentName());
-      Relation relation = Relation.getRelation(entry.getRelationId());
+      Relation relation = Relation.getRelationById(entry.getRelationId());
       Neuron child = new Text(entry.getChildName());
       Synapse synapse = new Synapse(parent, relation, child);
       repository.persist(synapse);

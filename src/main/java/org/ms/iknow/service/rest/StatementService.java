@@ -2,6 +2,7 @@ package org.ms.iknow.service.rest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ms.iknow.core.manager.StatementManager;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
@@ -24,17 +25,18 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("/Statement")
 public class StatementService {
-
+  
     // This method is called if TEXT_PLAIN is request
     @GET
-    @Path("{entity1}")
+    @Path("{statement}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response statement(@PathParam("entity1") String entity1) {
-        Text neuron = new Text(entity1);
+    public Response createStatement(@PathParam("statement") String statement) {
+        new StatementManager().execute(statement, null);
+        Text neuron = new Text(statement);
         MemoryRepository.getInstance().persist(neuron);
 
         // read for response
-        List<Neuron> neurons = MemoryRepository.getInstance().findByName(entity1);
+        List<Neuron> neurons = MemoryRepository.getInstance().findByName(statement);
         return Response.ok(neurons).build();
     }
 
@@ -47,7 +49,7 @@ public class StatementService {
                               @PathParam("entity2") String entity2) {
         Text parent = new Text(entity1);
         Text child = new Text(entity2);
-        Relation r = Relation.getRelation(relation);
+        Relation r = Relation.getRelationById(relation);
         Synapse synapse = new Synapse(parent, r, child);
         MemoryRepository.getInstance().persist(synapse);
 

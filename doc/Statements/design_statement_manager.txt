@@ -1,0 +1,54 @@
+Projekt: IKnow
+Autor  : Mark Steiner
+
+Changes
+00.01		27.01.2016		Mark		Initial version
+
+STATEMENT MANAGER
+================================================================================
+
+Problemstellung
+--------------------------------------------------------------------------------
+Einen möglichen Eingabekanal stellt die Sprache dar. IKnow muss also in der Lage
+sein, 
+- zwischen Statement, Frage und Antwort zu unterscheiden.
+- in einem Satz Substantive, Adjektive, Verben, Genus und Numerus zu erkennen.
+- Kardinalitäten anhand von Artikeln festzustellen.
+- Dialoge zu verwalten.
+
+Datenobjekte
+--------------------------------------------------------------------------------
+                  -------------
+                  | Message   |
+                  |-----------|
+                  |ID         |
+                  |Expression |
+                  -------------
+                        ^
+                        |
+      --------------------------------------
+      |                 |                  |
+      |                 |                  |      
+-------------     -------------     -------------
+| Statement |     | Question  |     |  Answer   |
+|-----------|     |-----------|     |-----------|
+|           |     |           |     |QuestionId | 
+|           |     |           |     |           |       
+-------------     -------------     -------------
+
+
+Statement, Frage oder Antwort?
+--------------------------------------------------------------------------------
+...................................................................
+.           . "?" am Ende?    . Hat QuestionId? . Hat ID*         |
+...................................................................
+. Statement .      Nein       .       Nein      .      Nein       |
+. Question  .       Ja        .       Nein      .       Ja        |
+. Answer    .      Nein       .        Ja       .      Nein       |
+...................................................................
+
+* Zum Zeitpunkt der Erstellung: Die ID wird auf dem Server generiert. Sendet
+  der Client eine Expression mit einer ID, so hat er sie vorgängig vom Server
+  empfangen. Es handelt sich folglich um eine Question.
+
+
