@@ -1,0 +1,76 @@
+Projekt: IKnow
+Autor  : Mark Steiner
+
+Changes
+00.01		04.02.2016		Mark		Initial version
+
+GRAMMAR REPOSITORY MODEL
+================================================================================
+
+Verben
+--------------------------------------------------------------------------------
+Verben werden in Relationen verwendet, um Kardinalitäten und Beziehungen fest-
+zulegen. Sie verfügen somit über einen besonderen Status.
+
+Das Modell splittet sich auf in
+- Stammdaten: s. Relation.java
+- Bewegungsdaten: Diese Verben stellen die sprachlichen Ausprägungen zu den
+  Relationen dar und müssen in Verbindung zu Relation stehen.
+
+         GrammarRepository             .            Repository
+  .......................................................................
+                                       .
+  ------------       ------------      .  ------------       ------------
+  |Index     |       |Verb      |      .  |Relation  |       |Synapse   |
+  ------------       ------------ n..1 .  ------------ 1..n  ------------
+  |Name     *| 1..n  |relationId|------.->|id        |------>|relationId|
+  |id        |------>|verbId    |      .  |name      |       |id        |
+  ------------       ------------      .  ------------       ------------
+                                       .
+
+Substantive, Adjektive, Genus
+--------------------------------------------------------------------------------
+Verben werden in Relationen verwendet, um Kardinalitäten und Beziehungen fest-
+zulegen. Sie verfügen somit über einen besonderen Status.
+
+Das Modell splittet sich auf in
+- Stammdaten: s. Relation.java
+- Bewegungsdaten: Diese Verben stellen die sprachlichen Ausprägungen zu den
+  Relationen dar und müssen in Verbindung zu Relation stehen.
+
+         GrammarRepository             .            Repository
+  .......................................................................
+                                       .
+  ------------       ------------      .  ------------
+  |Index     |       |Objekt    |      .  |Neuron    |
+  ------------       ------------ n..1 .  ------------
+  |Name     *| 1..n  |neuronId  |------.->|id        |
+  |id        |------>|genusId   |--|   .  |name      |
+  ------------       ------------  |   .  ------------
+                                 n.|.0 .
+                     ------------  |   .
+                     |Genus     |  |   .
+                     ------------  |   .
+                     |id        |<-|   .
+                     |name      |      .              
+                     ------------      .
+
+
+Übersicht der unterstützten Genus
+................................................................................
+
+  ..................................
+  .         .Bestimmt   .Unbestimmt.
+  ..................................
+  . Fall    .           .          .
+  ..................................
+  .Maskulin .Der        .Ein       .
+  .Feminin  .Die        .Eine      .
+  .Neutrum  .Das        .Ein       .
+  ..................................
+  
+  Anmerkung: Hier könnte man die Beugungen evtl. einbauen("Auto" -> "Autos").
+
+  
+  
+  

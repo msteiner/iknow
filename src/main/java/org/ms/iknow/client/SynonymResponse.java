@@ -2,7 +2,7 @@ package org.ms.iknow.client;
 
 import java.util.Set;
 
-public class Response {
+public class SynonymResponse {
 
     MetaData    metaData;
     Set<Synset> synsets;

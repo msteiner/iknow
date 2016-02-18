@@ -6,6 +6,27 @@ Changes
 
 STATEMENT MANAGER
 ================================================================================
+Kontext
+--------------------------------------------------------------------------------
+
+  Statement von Gast:
+  --------------                             --------------
+  |REST SI     |-------- expression -------->|Stat.Manager|----->
+  --------------                             --------------
+  
+  Frage von Gast:
+  --------------                             --------------
+  |REST SI     |-------- expression -------->|Stat.Manager|----->
+  --------------                             --------------
+  
+  Frage von IKnow, Antwort von Gast:
+  --------------                             --------------
+  |REST SI     |<-- expression, QuestionId --|Stat.Manager|<-----
+  --------------                             --------------
+       \|/
+  --------------                             --------------
+  |REST SI     |-- expression, QuestionId -->|Stat.Manager|----->
+  --------------                             --------------
 
 Problemstellung
 --------------------------------------------------------------------------------
@@ -16,7 +37,7 @@ sein,
 - Kardinalitäten anhand von Artikeln festzustellen.
 - Dialoge zu verwalten.
 
-Datenobjekte
+Datenobjekte (Interne Verwendung)
 --------------------------------------------------------------------------------
                   -------------
                   | Message   |
@@ -50,5 +71,79 @@ Statement, Frage oder Antwort?
 * Zum Zeitpunkt der Erstellung: Die ID wird auf dem Server generiert. Sendet
   der Client eine Expression mit einer ID, so hat er sie vorgängig vom Server
   empfangen. Es handelt sich folglich um eine Question.
+
+
+Grammatische Typen zuordnen
+--------------------------------------------------------------------------------
+
+Mögliche Formen
+---------------
+
+  ..........     ..........     ..........     ..........
+  |GENUS   |     |SUBST.  |     |VERB    |     |ADJEKTIV|
+  |........|---->|........|---->|........|---->|........|
+  |Der     |     |Baum    |     |ist     |     |gross   |
+  ..........     ..........     ..........     ..........
+  
+  ..........     ..........     ..........     ..........
+  |VERB    |     |GENUS   |     |SUBST.  |     |ADJEKTIV|
+  |........|---->|........|---->|........|---->|........| ?
+  |Ist     |     |der     |     |Baum    |     |gross   |
+  ..........     ..........     ..........     ..........
+
+Verben
+------
+Verben besitzen einen Sonderstatus, da sie als Relationen abgebildet werden und
+somit die Kardinalitäten und Operatoren darstellen. Beispiel hierfür sind
+- IST
+- HAT
+- ENTHÄLT
+
+Zur Behandlung der Relationen müssen nun Synonyme von Verben auf die unter-
+stützten Grundformen zurückgeführt werden.
+Beispiel: "Der Baum ERSCHEINT gross" wird zu "Der Baum IST gross".
+
+Sequenzdiagramm:
+
+  .............     .............     .............     .............
+  |St.-Manager|     |Gramm.Repo |     |Thesa.Serv.|     |Thesa.Serv.|
+  .............     .............     .............     .............
+        .                 .                 .                 .  
+  CASE In GrammarRepository gefunden.       .                 .
+  ...................................................................
+        .   isVerb(Syn.)  .                 .                 .
+        .---------------->.                 .                 .
+        .     Ja(type)    .                 .                 .
+        .<----------------.                 .                 .
+        .                 .                 .                 .  
+  CASE In ThesaurusService gefunden und lokal aufgenommen.    .
+  ...................................................................
+        .   isVerb(Syn.)  .                 .                 .
+        .---------------->.                 .                 .
+        .    Nein(null)   .                 .                 .
+        .<----------------.                 .                 .
+        .            askFor(syn)            .                 .
+        .---------------------------------->.                 .
+        .             List(syn)             .                 .
+        .<----------------------------------.                 .
+        .  find, save     .                 .                 .
+        .---------------->.                 .                 .
+        .                 .                 .                 .  
+  CASE Nicht gefunden und als Frage aufgenommen.              .
+  ...................................................................
+        .   isVerb(Syn.)  .                 .                 .
+        .---------------->.                 .                 .
+        .    Nein(null)   .                 .                 .
+        .<----------------.                 .                 .
+        .            askFor(syn)            .                 .
+        .---------------------------------->.                 .
+        .           not found(null)         .                 .
+        .<----------------------------------.                 .
+        .                 . createQuestion(syn)               .
+        .---------------------------------------------------->.
+        .                 .                 .                 .  
+
+
+
 
 

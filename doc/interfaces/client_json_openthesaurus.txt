@@ -1,0 +1,51 @@
+Projekt: IKnow
+Autor  : Mark Steiner
+
+Changes
+00.01		27.01.2016		Mark		Initial version
+
+OpenThesaurusClient
+================================================================================
+
+Beschreibung
+--------------------------------------------------------------------------------
+Liefert Synonyme und Assoziationen für einen Suchbegriff.
+
+Request
+--------------------------------------------------------------------------------
+Beispiel:
+"https://www.openthesaurus.de/synonyme/search?q=test&format=application/json"
+
+Response
+--------------------------------------------------------------------------------
+Beispiel- Ergebnis des Requests oben:
+{"metaData":
+   {
+   "apiVersion":"0.2",
+   "warning":"ACHTUNG: Bitte vor ernsthafter Nutzung feedback@openthesaurus.de kontaktieren, um bei API-Änderungen informiert zu werden",
+   "copyright":"Copyright (C) 2014 Daniel Naber (www.danielnaber.de)",
+   "license":"GNU LESSER GENERAL PUBLIC LICENSE Version 2.1",
+   "source":"http://www.openthesaurus.de",
+   "date":"Wed Feb 03 20:27:40 CET 2016"
+   },
+   "synsets":
+   [
+      {"id":292,
+       "categories":[],
+       "terms":[
+          {"term":"Erprobung", "level":"3"},
+          {"term":"Probe", "level":"3"},
+          {"term":"Prüfung", "level":"3"},
+          {"term":"Test", "level":"3"},
+          {"term":"Versuch", "level":"3"}]
+      },
+      {"id":4398,
+       "categories":[],
+       "terms":[
+          {"term":"Kontrolle", "level":"3"},
+          {"term":"Leistungsnachweis", "level":"3"},
+          {"term":"Prüfung", "level":"3"},
+          {"term":"Test", "level":"3"}]
+      }
+   ]
+}

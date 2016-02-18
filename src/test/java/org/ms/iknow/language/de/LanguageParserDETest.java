@@ -3,21 +3,19 @@ package org.ms.iknow.language.de;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.ms.iknow.core.manager.type.Message;
+import org.ms.iknow.core.manager.type.Statement;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
-import org.ms.iknow.core.type.language.Adjectiv;
-import org.ms.iknow.core.type.language.Genus;
-import org.ms.iknow.core.type.language.Numerus;
-import org.ms.iknow.core.type.language.Substantiv;
-import org.ms.iknow.core.type.language.Verb;
-import org.ms.iknow.core.type.language.Word;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.exception.GrammarException;
 import org.ms.iknow.language.LanguageParser;
 import org.ms.iknow.language.de.type.WordType;
 import org.ms.iknow.persistence.repo.GrammarRepository;
+import org.ms.iknow.persistence.repo.Repository;
 import org.ms.iknow.persistence.repo.memory.GrammarRepositoryDE;
+import org.ms.iknow.persistence.repo.memory.MemoryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +28,14 @@ public class LanguageParserDETest {
     public static final String QUESTION_1  = "has Baum Ast?";
 
     public LanguageParser      parser;
-    GrammarRepository          repo        = GrammarRepositoryDE.getInstance();
+    GrammarRepository          grammarRepo = GrammarRepositoryDE.getInstance();
+    Repository                 repository  = MemoryRepository.getInstance();
 
     @Before
     public void init() {
         parser = new LanguageParserDE();
-        repo.deleteAll();
+        grammarRepo.deleteAll();
+        repository.deleteAll();
     }
 
     @Deprecated
@@ -49,107 +49,118 @@ public class LanguageParserDETest {
     }
 
     @Test
-    public void testParseExpressionPositive() {
-
+    public void testParseKnownExpression() {
         addToGrammarRepository("Der", WordType.GENUS);
         addToGrammarRepository("Baum", WordType.SUBSTANTIVE);
-        addToGrammarRepository("ist", WordType.VERB);
-        addToGrammarRepository("braun", WordType.ADJECTIVE);
-
-        String expression;
-        List<Word> words;
-        expression = "Der Baum ist braun";
-        words = parser.parseExpression(expression);
-        assertNotNull("Expected 4 Words but was null.", words);
-        assertEquals("Expected 4 Words but found " + words.size() + ".", 4, words.size());
-
-        assertWord(words.get(0), "Der", WordType.GENUS);
-        assertWord(words.get(1), "Baum", WordType.SUBSTANTIVE);
-        assertWord(words.get(2), "ist", WordType.VERB);
-        assertWord(words.get(3), "braun", WordType.ADJECTIVE);
+        addToGrammarRepository("wirkt", Relation.IS);
+        addToGrammarRepository("gross", WordType.ADJECTIVE);
+      
+        Synapse synapse = parseStatement("Der Baum wirkt gross.");
+        assertSynapse("Baum", Relation.IS, "gross", synapse);
     }
 
     @Test
-    public void testParseExpressionWithMarks() {
-
+    public void testParsePartiallyKnownExpression_1() {
         addToGrammarRepository("Der", WordType.GENUS);
         addToGrammarRepository("Baum", WordType.SUBSTANTIVE);
-        addToGrammarRepository("ist", WordType.VERB);
-        addToGrammarRepository("braun", WordType.ADJECTIVE);
-
-        String expression;
-        List<Word> words;
-        expression = "Der Baum ist braun.";
-        words = parser.parseExpression(expression);
-        assertNotNull("Expected 4 Words but was null.", words);
-        assertEquals("Expected 4 Words but found " + words.size() + ".", 4, words.size());
-
-        assertWord(words.get(0), "Der", WordType.GENUS);
-        assertWord(words.get(1), "Baum", WordType.SUBSTANTIVE);
-        assertWord(words.get(2), "ist", WordType.VERB);
-        assertWord(words.get(3), "braun", WordType.ADJECTIVE);
+        addToGrammarRepository("wirkt", Relation.IS);
+        //addToGrammarRepository("gross", WordType.ADJECTIVE);
+        Synapse synapse = parseStatement("Der Baum wirkt gross.");
+        assertSynapse("Baum", Relation.IS, "gross", synapse);
+        assertTrue(grammarRepo.containsVerb("wirkt"));
+        assertEquals(Relation.IS, grammarRepo.getRelation("wirkt"));
+        assertTrue(grammarRepo.containsUndefined("gross"));
     }
-
-
+  
     @Test
-    public void testParseExpressionWithUnknownWords() {
-
+    public void testParsePartiallyKnownExpression_2() {
         addToGrammarRepository("Der", WordType.GENUS);
-        addToGrammarRepository("Baum", WordType.SUBSTANTIVE);
-        addToGrammarRepository("ist", WordType.VERB);
-        addToGrammarRepository("braun", WordType.ADJECTIVE);
-
-        String expression;
-        List<Word> words;
-        expression = "Der Baum erscheint gross";
-        words = parser.parseExpression(expression);
-        assertNotNull("Expected 4 Words but was null.", words);
-        assertEquals("Expected 4 Words but found " + words.size() + ".", 4, words.size());
-
-        assertWord(words.get(0), "Der", WordType.GENUS);
-        assertWord(words.get(1), "Baum", WordType.SUBSTANTIVE);
-        assertWord(words.get(2), "erscheint", WordType.UNKNOWN);
-        assertWord(words.get(3), "gross", WordType.UNKNOWN);
-
-        System.out.println("+++ [" + words.get(0).getExpression() + "] ist ein " + getWordType(words.get(0)) + ".");
-        System.out.println("+++ [" + words.get(1).getExpression() + "] ist ein " + getWordType(words.get(1)) + ".");
-        System.out.println("+++ [" + words.get(2).getExpression() + "] ist ein " + getWordType(words.get(2)) + ".");
-        System.out.println("+++ [" + words.get(3).getExpression() + "] ist ein " + getWordType(words.get(3)) + ".");
+        //addToGrammarRepository("Baum", WordType.SUBSTANTIVE);
+        addToGrammarRepository("wirkt", Relation.IS);
+        //addToGrammarRepository("gross", WordType.ADJECTIVE);
+        Synapse synapse = parseStatement("Der Baum wirkt gross.");
+        assertSynapse("Baum", Relation.IS, "gross", synapse);
+        assertTrue(grammarRepo.containsVerb("wirkt"));
+        assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("wirkt") + "].", Relation.IS, grammarRepo.getRelation("wirkt"));
+        assertTrue(grammarRepo.containsSubstantive("Baum"));
+        assertTrue(grammarRepo.containsUndefined("gross"));
+    }
+    
+    @Test
+    public void testParsePartiallyKnownExpression_3() {
+        addToGrammarRepository("Vögel", WordType.SUBSTANTIVE);
+        addToGrammarRepository("sind", Relation.IS);
+        addToGrammarRepository("Tiere", WordType.SUBSTANTIVE);
+        Synapse synapse = parseStatement("Vögel sind Tiere.");
+        assertSynapse("Vögel", Relation.IS, "Tiere", synapse);
+        assertTrue(grammarRepo.containsVerb("sind"));
+        assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("sind") + "].", Relation.IS, grammarRepo.getRelation("sind"));
+        assertTrue(grammarRepo.containsSubstantive("Tiere"));
+    }
+  
+    @Test
+    public void testParsePartiallyKnownExpression_4() {
+        //addToGrammarRepository("Vögel", WordType.SUBSTANTIVE);
+        addToGrammarRepository("sind", Relation.IS);
+        //addToGrammarRepository("Tiere", WordType.SUBSTANTIVE);
+        Synapse synapse = parseStatement("Vögel sind Tiere.");
+        assertSynapse("Vögel", Relation.IS, "Tiere", synapse);
+        assertTrue(grammarRepo.containsUndefined("Vögel"));
+        assertTrue(grammarRepo.containsVerb("sind"));
+        assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("sind") + "].", Relation.IS, grammarRepo.getRelation("sind"));
+        assertTrue(grammarRepo.containsUndefined("Tiere"));
+    }
+  
+    @Test
+    public void testParsePartiallyKnownExpression_5() {
+        //addToGrammarRepository("Vögel", WordType.SUBSTANTIVE);
+        addToGrammarRepository("sind", Relation.IS);
+        //addToGrammarRepository("Tiere", WordType.SUBSTANTIVE);
+        Synapse synapse = parseStatement("Lorem Ipsum dolor.");
+        assertSynapse("Vögel", Relation.IS, "Loren", synapse);
+        assertTrue(grammarRepo.containsUndefined("Vögel"));
+        assertTrue(grammarRepo.containsVerb("sind"));
+        assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("sind") + "].", Relation.IS, grammarRepo.getRelation("sind"));
+        assertTrue(grammarRepo.containsUndefined("Tiere"));
     }
 
-    private void assertWord(Word word, String expected, WordType wordTypeExpected) {
-        assertNotNull("Expected Word but was null.", word);
-        assertNotNull("Expected expression but was null.", word.getExpression());
-        assertEquals("Expected " + word.getExpression() + " for expression " + wordTypeExpected + " but found " + word.getExpression()
-                     + ".", expected, word.getExpression());
-        assertEquals("Expected " + wordTypeExpected + " for expression " + word.getExpression() + " but found " + getWordType(word) + ".",
-                     wordTypeExpected, getWordType(word));
+    private void assertSynapse(String parent, Relation relation, String child, Synapse synapse) {
+        Neuron p = new Text(parent);
+        Neuron c = new Text(child);
+        Synapse expected = new Synapse(p, relation, c);
+
+        assertEquals(expected.getParent().getName(), synapse.getParent().getName());
+        assertEquals(expected.getChild().getName(), synapse.getChild().getName());
+        assertEquals(expected.getRelation(), synapse.getRelation());
+    }
+
+    private Synapse parseStatement(String expression) {
+        Synapse synapse = null;
+        Message message = new Statement();
+        message.setSource(expression);
+        try {
+            synapse = parser.parseExpression(message);
+        } catch (GrammarException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return synapse;
     }
 
     private void addToGrammarRepository(String expression, WordType wordType) {
         try {
-            repo.addExpression(expression, wordType);
+            grammarRepo.addExpression(expression, wordType);
         } catch (GrammarException e) {
             e.printStackTrace();
         }
     }
 
-    private WordType getWordType(Word word) {
-        WordType wordType = null;
-        if (word instanceof Adjectiv) {
-            wordType = WordType.ADJECTIVE;
-        } else if (word instanceof Genus) {
-            wordType = WordType.GENUS;
-        } else if (word instanceof Numerus) {
-            wordType = WordType.ADJECTIVE;
-        } else if (word instanceof Substantiv) {
-            wordType = WordType.SUBSTANTIVE;
-        } else if (word instanceof Verb) {
-            wordType = WordType.VERB;
-        } else {
-            wordType = WordType.UNKNOWN;
+    private void addToGrammarRepository(String verb, Relation relation) {
+        try {
+            grammarRepo.addVerb(verb, relation);
+        } catch (GrammarException e) {
+            e.printStackTrace();
         }
-        return wordType;
     }
 
     void assertSynapse(Synapse expected, Synapse actual) {

@@ -1,5 +1,6 @@
 package org.ms.iknow.persistence.repo;
 
+import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.exception.GrammarException;
 import org.ms.iknow.language.de.type.WordType;
 
@@ -9,5 +10,19 @@ public interface GrammarRepository {
   
   public void addExpression(String expression, WordType wordType) throws GrammarException;
   
+  public void addVerb(String expression, Relation relation) throws GrammarException;
+  
   public void deleteAll();
+  
+  public boolean containsGenus(String genus);
+  
+  public boolean containsSubstantive(String substantive);
+  
+  public boolean containsAdjective(String adjective);
+  
+  public boolean containsVerb(String verb);
+  
+  public boolean containsUndefined(String term);
+  
+  public Relation getRelation(String verb);
 }

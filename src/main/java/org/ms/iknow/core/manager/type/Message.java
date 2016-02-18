@@ -11,6 +11,7 @@ public abstract class Message {
 
     String     id;
     List<Word> expression;
+    String source;
 
     public Message() {
         this.id = UUID.randomUUID().toString();
@@ -45,5 +46,26 @@ public abstract class Message {
      */
     public void setExpression(List<Word> expression) {
         this.expression = expression;
+    }
+  
+    /**
+     * @return the source
+     */
+    public String getSource() {
+        return source;
+    }
+  
+    /**
+     * @param source the source to set
+     */
+    public void setSource(String source) {
+        this.source = source;
+    }
+  
+    /**
+     * @return the source
+     */
+    public String getExpressionAsString() {
+        return source;
     }
 }

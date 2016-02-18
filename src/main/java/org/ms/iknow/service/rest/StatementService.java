@@ -7,6 +7,7 @@ import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
+import org.ms.iknow.exception.BusinessException;
 import org.ms.iknow.persistence.repo.memory.MemoryRepository;
 import org.ms.iknow.service.type.StatementEntry;
 
@@ -31,7 +32,12 @@ public class StatementService {
     @Path("{statement}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response createStatement(@PathParam("statement") String statement) {
-        new StatementManager().execute(statement, null);
+        try {
+            new StatementManager().execute(statement, null);
+        } catch (BusinessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         Text neuron = new Text(statement);
         MemoryRepository.getInstance().persist(neuron);
 

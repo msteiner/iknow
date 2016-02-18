@@ -13,8 +13,8 @@ public class OpenThesaurusClient {
     public void getThesaurusList(String url) {
     
         ClientConfig clientConfig = new DefaultClientConfig();
-clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-Client client = Client.create(clientConfig);
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        Client client = Client.create(clientConfig);
       
         //Client client = Client.create();
         WebResource webResource = client.resource(url);
@@ -23,7 +23,7 @@ Client client = Client.create(clientConfig);
             throw new RuntimeException("Failed : HTTP error code : " + clientResponse.getStatus());
         }
         //String output = response.getEntity(String.class);
-        Response response = clientResponse.getEntity(Response.class);
+        SynonymResponse response = clientResponse.getEntity(SynonymResponse.class);
 
       
         System.out.println("Output from Server .... \n");
