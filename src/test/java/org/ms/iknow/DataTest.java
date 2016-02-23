@@ -3,6 +3,7 @@ package org.ms.iknow;
 import org.junit.Before;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.persistence.repo.Repository;
@@ -23,9 +24,9 @@ public abstract class DataTest {
     List<StatementEntry> entries = fileImporterService.readNeurons(fileName);
     for (StatementEntry entry : entries) {
       Neuron parent = new Text(entry.getParentName());
-      Relation relation = Relation.getRelationById(entry.getRelationId());
+      RelationType relationType = RelationType.getRelationTypeById(entry.getRelationId());
       Neuron child = new Text(entry.getChildName());
-      Synapse synapse = new Synapse(parent, relation, child);
+      Synapse synapse = new Synapse(parent, new Relation(relationType), child);
       repository.persist(synapse);
     }
   }

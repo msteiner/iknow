@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.persistence.repo.memory.MemoryRepository;
 import org.ms.iknow.service.type.StatementEntry;
 
@@ -17,7 +18,7 @@ public class StatementServiceTest {
 
     StatementService statementService   = null;
     final String     NEURON_PARENT_NAME = "IKnow";
-    final String     NEURON_RELATION    = Relation.IS.getId();
+    final String     NEURON_RELATION    = RelationType.IS.getId();
     final String     NEURON_CHILD_NAME  = "Wissen";
 
     @Before

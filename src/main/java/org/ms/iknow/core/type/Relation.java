@@ -1,72 +1,40 @@
 package org.ms.iknow.core.type;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.ms.iknow.exception.BusinessException;
 
-public enum Relation {
+public class Relation {
 
-    IS("1", "is"),
-    IS_NOT("2", "is not"),
-    HAS("3", "has"),
-    HAS_MANY("4", "has more than one"),
-    HAS_NOT("5", "has not"),
-    IS_PART_OF("6", "is part of"),
-    CONSISTS_OF("7", "consists of"),
-    CONTAINS("8", "contains"),
-    IS_EQUALS("9", "is equals to"),
-    IS_NOT_EQUALS("10", "is not equals to"),
-    UNKNOWN("999", "unknown");
+    RelationType type;
+    long         value;
 
-    private String                id;
-    private String                value;
-    private static List<Relation> list;
-    static {
-        list = new ArrayList<Relation>();
-        list.add(IS);
-        list.add(IS_NOT);
-        list.add(HAS);
-        list.add(HAS_MANY);
-        list.add(HAS_NOT);
-        list.add(IS_PART_OF);
-        list.add(CONSISTS_OF);
-        list.add(CONTAINS);
-        list.add(IS_EQUALS);
-        list.add(IS_NOT_EQUALS);
-        list.add(UNKNOWN);
+    private Relation() {
+        // hide this constructor
     }
 
-    Relation(String id, String value) {
-        this.id = id;
-        this.value = value;
+    public Relation(RelationType type) {
+        this.type = type;
     }
 
-    public static Relation getRelationById(String id) {
-        for (Relation relation : list) {
-            if (relation.getId().equals(id)) {
-                return relation;
-            }
+    public Relation(RelationType type, long value) throws BusinessException {
+        if (type.equals(RelationType.HAS)) {
+            this.type = type;
+            this.value = value;
+        } else {
+            throw new BusinessException("Ein Value kann nur für den RelationType [" + type + "] gesetzt werden.");
         }
-        return null;
     }
 
-    public static Relation getRelationByValue(String value) {
-        for (Relation relation : list) {
-            if (relation.getValue().equals(value)) {
-                return relation;
-            }
-        }
-        return null;
+    /**
+     * @return the type
+     */
+    public RelationType getType() {
+        return type;
     }
 
-    public static List<Relation> getAllValues() {
-        return list;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getValue() {
+    /**
+     * @return the value
+     */
+    public long getValue() {
         return value;
     }
 }

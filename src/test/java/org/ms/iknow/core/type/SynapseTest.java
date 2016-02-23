@@ -11,7 +11,7 @@ public class SynapseTest {
     Text baum = new Text("Baum");
     Text ast = new Text("Ast");
     Text blatt = new Text("Blatt");
-    Relation hasMany = Relation.HAS_MANY;
+    Relation hasMany = new Relation(RelationType.HAS_MANY);
     Synapse synapseAst = new Synapse(baum, hasMany, ast);
     Synapse synapseBlatt_1 = new Synapse(baum, hasMany, blatt);
     

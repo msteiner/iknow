@@ -17,8 +17,7 @@ Aktuell gültige Vorbedingungen sind:
 1. OFFEN
 
 Statement
-.........
-
+................................................................................
 Nicht unterstützte und ungültige Fälle:
 
                  ..........
@@ -63,20 +62,33 @@ Gültige Fälle:
   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
   CASE ADJEKTIV:
                  ..........     ..........                    ..........
-                 |Adjektiv|     |VERB    |                    |ADJEKTIV|
+                 |ADJEKTIV|     |VERB    |                    |ADJEKTIV|
                  |........|---->|........|------------------->|........|
                  |klein   |     |ist     |                    |hübsch  |
                  ..........     ..........                    ..........
   . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
   CASE UNBEKANNT:
                  ..........     ..........                    ..........
-                 |Unknown |     |Unknown |                    |Unknown |
+                 |UNKNOWN |     |UNKNOWN |                    |UNKNOWN |
                  |........|---->|........|------------------->|........|
                  |Lorem   |     |Ipsum   |                    |dolor   |
                  ..........     ..........                    ..........
-
-Logik neu
------------------------
+  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+  CASE NUMERISCH:
+                 ..........     ..........     ..........     ..........
+                 |SUBST.  |     |VERB    |     |NUMERAL |     |SUBST.  |
+                 |........|---->|........|---->|........|---->|........|
+                 |Bern    |     |hat     |     |250000  |     |Bewohner|
+                 ..........     ..........     ..........     ..........
+                 
+  ..........     ..........     ..........     ..........     ..........
+  |GENUS   |     |SUBST.  |     |VERB    |     |NUMERAL |     |SUBST.  |
+  |........|---->|........|---->|........|---->|........|---->|........|
+  |Ein     |     |Auto    |     |hat     |     |4       |     |Räder   |
+  ..........     ..........     ..........     ..........     ..........
+                 
+Logik
+-----
   IF (Anzahl Token < 3)
     Ungültig (Zuwenig Wörter)
   IF (Anzahl Token == 3)
@@ -102,9 +114,7 @@ Logik neu
           Token(1) = SUBSTANTIV
           registerSubstantiv(Token(1))
           registerVerb(Token(2))
-          IF (Token(3) !isSubstantiv || !isAdjektiv)
-              registerUnknown(Token(3))
-          IF (Token(0) == GENUS)
+          IF (Token(3) == GENUS)
               IF (Token(3) !isSubstantiv || !isAdjektiv)
                   registerUnknown(Token(3))
           ELSE
@@ -114,37 +124,26 @@ Logik neu
   ELSE 
     Ungültig (Zuviele Wörter)
   
------------------------
-Daraus geht folgende Logik hervor:
--> IF [FELD 1] IS IN GrammarRepository.Genus
-      [FELD 1] == GENUS, [FELD 2] == SUBSTANTIV, [FELD 3] == VERB
-      --GrammarRepository.add([FELD 2])
-      --Neuron.Parent == [FELD 2]
-      --Neuron.Synapse == [FELD 3]
-      IF [FELD 4] IS IN GrammarRepository.Genus
-         [FELD 5] == SUBSTANTIV
-         --Neuron.Child == [FELD 5]
-      ELSE
-         [FELD 4] == SUBSTANTIV
-         --Neuron.Child == [FELD 4]
--> ELSE IF [FELD 1] IS IN GrammarRepository.index
-      [FELD 1] == SUBSTANTIV OR ADJEKTIV, [FELD 2] == VERB, [FELD 3] == SUBSTANTIV OR ADJEKTIV
-      --Neuron.Parent == [FELD 1]
-      --Neuron.Synapse == [FELD 2]
-      --Neuron.Child == [FELD 3]
--> ELSE
-      [FELD 1] == UNKNOWN, [FELD 2] == VERB, [FELD 3] == UNKNOWN
-      --Neuron.Parent == [FELD 1]
-      --Neuron.Synapse == [FELD 2]
-      --Neuron.Child == [FELD 3]
                  
 Question
-........
-TODO                 
-                 
-                 
-  ..........     ..........     ..........     ..........
-  |VERB    |     |GENUS   |     |SUBST.  |     |ADJEKTIV|
-  |........|---->|........|---->|........|---->|........| ?
-  |Ist     |     |der     |     |Baum    |     |gross   |
-  ..........     ..........     ..........     ..........
+................................................................................                 
+  
+  .VERB          .GENUS         .SUB./ADJ.     .SUB./ADJ.
+  .........................................................
+  .Hast          .              .du            .Mut     . ?
+  .Ist           .das           .Wasser        .kalt    . ?
+  .Haben         .              .Autos         .Räder   . ?
+  .Scheint       .die           .Sonne         .        . ?
+  .Spricht       .              .Lisa          .        . ?
+  .Tut           .es            .ihm           .gut     . ?
+  
+Was ist Eisen?
+Wieviele Einwohner hat Bern?
+  
+  
+  
+  
+  
+  
+  
+  

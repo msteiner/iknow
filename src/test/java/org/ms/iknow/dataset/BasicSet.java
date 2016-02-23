@@ -1,6 +1,7 @@
 package org.ms.iknow.dataset;
 
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.radiation.HSB;
 import org.ms.iknow.core.type.sense.text.Text;
@@ -47,18 +48,18 @@ public class BasicSet {
     }
 
     public static Synapse getBaumHatStamm() {
-        return new Synapse(getBaum(), Relation.HAS, getStamm());
+        return new Synapse(getBaum(), new Relation(RelationType.HAS), getStamm());
     }
 
     public static Synapse getBaumHatBlatt() {
-        return new Synapse(getBaum(), Relation.HAS_MANY, getBlatt());
+        return new Synapse(getBaum(), new Relation(RelationType.HAS_MANY), getBlatt());
     }
 
     public static Synapse getBaumIstGruen() {
-        return new Synapse(getBaum(), Relation.IS, getGruen());
+        return new Synapse(getBaum(), new Relation(RelationType.IS), getGruen());
     }
 
     public static Synapse getBaumIstBraun() {
-        return new Synapse(getBaum(), Relation.IS, getBraun());
+        return new Synapse(getBaum(), new Relation(RelationType.IS), getBraun());
     }
 }

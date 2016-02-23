@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.dataset.BasicSet;
@@ -98,9 +99,9 @@ public class RepositoryTest {
         Neuron stamm_2 = new Text("Stamm");
         Neuron stamm_3 = new Text("Stamm");
 
-        Synapse synapse_1 = new Synapse(baum_1, Relation.HAS, stamm_1);
-        Synapse synapse_2 = new Synapse(baum_2, Relation.HAS, stamm_2);
-        Synapse synapse_3 = new Synapse(baum_3, Relation.HAS, stamm_3);
+        Synapse synapse_1 = new Synapse(baum_1, new Relation(RelationType.HAS), stamm_1);
+        Synapse synapse_2 = new Synapse(baum_2, new Relation(RelationType.HAS), stamm_2);
+        Synapse synapse_3 = new Synapse(baum_3, new Relation(RelationType.HAS), stamm_3);
 
         assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
         assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
@@ -158,10 +159,10 @@ public class RepositoryTest {
         assertEquals("Expected empty neurons repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfNeurons());
         assertEquals("Expected empty synapses repository but wasen't.", 0, MemoryRepository.getInstance().getNumberOfSynapses());
 
-        Synapse s1 = new Synapse(baum, Relation.HAS, stamm);
-        Synapse s2 = new Synapse(baum, Relation.HAS_MANY, blatt);
-        Synapse s3 = new Synapse(baum, Relation.IS, braun);
-        Synapse s4 = new Synapse(baum, Relation.IS, gruen);
+        Synapse s1 = new Synapse(baum, new Relation(RelationType.HAS), stamm);
+        Synapse s2 = new Synapse(baum, new Relation(RelationType.HAS_MANY), blatt);
+        Synapse s3 = new Synapse(baum, new Relation(RelationType.IS), braun);
+        Synapse s4 = new Synapse(baum, new Relation(RelationType.IS), gruen);
 
         repo.persist(s1);
         repo.persist(s2);

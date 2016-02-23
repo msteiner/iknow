@@ -6,6 +6,7 @@ import org.ms.iknow.core.manager.type.Question;
 import org.ms.iknow.core.manager.type.Statement;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.exception.GrammarException;
@@ -82,68 +83,84 @@ public class LanguageParserDE implements LanguageParser {
         }
         if (tokens.size() < 3 || tokens.size() > 5) {
             throw new GrammarException("Der Satz muss zwischen 3 und 5 Wörter enthalten, weist jedoch " + tokens.size() + " auf.");
-        } else {
-            Neuron parent;
-            Relation relation;
-            Neuron child;
-            // "Der ICN ist ein Zug" OR "Der Baum ist schön".
-            if (isKnownAsGenus(tokens.get(0))) {
-                grammarRepository.addExpression(tokens.get(1), WordType.SUBSTANTIVE);
-                parent = new Text(tokens.get(1)); // Substantiv
-                addSubstantiveToRepository(tokens.get(1));
-                relation = grammarRepository.getRelation(tokens.get(2));
-                if (tokens.size() == 4) {
-                    child = new Text(tokens.get(3)); // Substantiv?Adjektiv?
-                    addTokenToRepository(tokens.get(3));
-                } else if (tokens.size() == 5) {
-                    if (isKnownAsGenus(tokens.get(3))) {
-                        child = new Text(tokens.get(4)); // Substantiv
-                    } else {
-                        child = new Text(tokens.get(3)); // Substantiv
-                    }
-                } else {
-                    throw new GrammarException("Erwartet wurden 5 Wörter, gefunden jedoch 4.");
-                }
-            // "Hasen sind Tiere".
-            } else if (isKnownAsSubstantive(tokens.get(0)) || isKnownAsAdjective(tokens.get(0))) {
-              System.out.println("+++ Wort 1=" + tokens.get(0));
-                addTokenToRepository(tokens.get(0));
-                parent = new Text(tokens.get(0)); // Substantiv?Adjektiv?
-                relation = grammarRepository.getRelation(tokens.get(1));
-                addTokenToRepository(tokens.get(2));
-                child = new Text(tokens.get(2)); // Substantiv?Adjektiv?
-            // "Blau ist wunderbar".
-            } else {
-                parent = new Text(tokens.get(0)); // UNKNOWN
-                relation = grammarRepository.getRelation(tokens.get(1));
-                child = new Text(tokens.get(2)); // UNKNOWN
-            }
-            return new Synapse(parent, relation, child);
         }
+        Neuron parent;
+        Relation relation;
+        Neuron child;
+        
+        if (tokens.size() == 3) {
+            // "Wale sind Tiere" oder "klein ist schön" oder "Lorem Ipsum dolor".
+            if (isKnownAsGenus(tokens.get(0))) {
+                throw new GrammarException("Unverständlicher Satzbau; sorry.");
+            } else {
+                registerToken(tokens.get(0));
+                parent = new Text(tokens.get(0));
+                relation = registerVerb(tokens.get(1));
+                registerToken(tokens.get(2));
+                child = new Text(tokens.get(2));
+            }
+        } else if (tokens.size() == 4) {
+            // "Der Baum ist schön".
+            if (isKnownAsGenus(tokens.get(0))) {
+                registerSubstantive(tokens.get(1));
+            } else {
+                registerAdjective(tokens.get(1));
+            }
+            parent = new Text(tokens.get(1));
+            relation = registerVerb(tokens.get(2));
+            registerToken(tokens.get(3));
+            child = new Text(tokens.get(3));
+        } else {
+            // "Der ICN ist ein Zug".
+            if (isKnownAsGenus(tokens.get(0))) {
+                registerSubstantive(tokens.get(1));
+                parent = new Text(tokens.get(1));
+                relation = registerVerb(tokens.get(2));
+                if (isKnownAsGenus(tokens.get(3))) {
+                    registerToken(tokens.get(4));
+                    child = new Text(tokens.get(4));
+                } else {
+                    throw new GrammarException("Unverständlicher Satzbau; sorry.");
+                }
+            } else {
+                throw new GrammarException("Unverständlicher Satzbau; sorry.");
+            }
+        }
+        return new Synapse(parent, relation, child);
     }
   
-    private void addTokenToRepository(String expression) throws GrammarException {
+    private void registerToken(String expression) throws GrammarException {
         if (!grammarRepository.containsSubstantive(expression) || !grammarRepository.containsAdjective(expression)) {
             grammarRepository.addExpression(expression, WordType.UNKNOWN);
         }
     }
   
-    private void addSubstantiveToRepository(String expression) throws GrammarException {
+    private void registerSubstantive(String expression) throws GrammarException {
         if (!grammarRepository.containsSubstantive(expression)) {
             grammarRepository.addExpression(expression, WordType.SUBSTANTIVE);
         }
     }
   
+    private void registerAdjective(String expression) throws GrammarException {
+        if (!grammarRepository.containsAdjective(expression)) {
+            grammarRepository.addExpression(expression, WordType.ADJECTIVE);
+        }
+    }
+  
+    private Relation registerVerb(String expression) throws GrammarException {
+        if (!grammarRepository.containsVerb(expression)) {
+            grammarRepository.addExpression(expression, WordType.VERB);
+            grammarRepository.addVerb(expression, RelationType.UNKNOWN);
+            Relation relation = new Relation(RelationType.UNKNOWN);
+            return relation;
+        }
+        else {
+            return grammarRepository.getRelation(expression);
+        }
+    }
+  
     private boolean isKnownAsGenus(String genus) {
         return grammarRepository.containsGenus(genus);
-    }
-
-    private boolean isKnownAsSubstantive(String substantive) {
-        return grammarRepository.containsSubstantive(substantive);
-    }
-
-    private boolean isKnownAsAdjective(String adjective) {
-        return grammarRepository.containsAdjective(adjective);
     }
 
     private String removeMarks(String expression) {
@@ -171,7 +188,9 @@ public class LanguageParserDE implements LanguageParser {
     private Synapse toSynapse(List<String> elements) {
 
         Neuron parent = new Text(elements.get(0));
-        Relation relation = Relation.getRelationByValue(elements.get(1));
+        RelationType relationType = RelationType.getRelationTypeByValue(elements.get(1));
+        Relation relation = null;
+        relation = new Relation(relationType);
         Neuron child = new Text(elements.get(2));
         return new Synapse(parent, relation, child);
     }

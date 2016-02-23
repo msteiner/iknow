@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.ms.iknow.core.manager.StatementManager;
 import org.ms.iknow.core.type.Neuron;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.exception.BusinessException;
@@ -55,7 +56,8 @@ public class StatementService {
                               @PathParam("entity2") String entity2) {
         Text parent = new Text(entity1);
         Text child = new Text(entity2);
-        Relation r = Relation.getRelationById(relation);
+        RelationType rt = RelationType.getRelationTypeById(relation);
+        Relation r = new Relation(rt);
         Synapse synapse = new Synapse(parent, r, child);
         MemoryRepository.getInstance().persist(synapse);
 
@@ -66,7 +68,7 @@ public class StatementService {
             for (Synapse s : n.getSynapses()) {
                 entry = new StatementEntry();
                 entry.setParentName(n.getName());
-                entry.setRelationId(s.getRelation().getId());
+                entry.setRelationId(s.getRelation().getType().getId());
                 entry.setChildName(s.getChild().getName());
                 entries.add(entry);
             }
@@ -81,7 +83,7 @@ public class StatementService {
             for (Synapse synapse : parent.getSynapses()) {
                 row = new StatementEntry();
                 row.setParentName(parent.getName());
-                row.setRelationId(synapse.getRelation().getValue());
+                row.setRelationId(synapse.getRelation().getType().getValue());
                 row.setChildName(synapse.getChild().getName());
                 table.add(row);
             }

@@ -9,9 +9,9 @@ public class RelationTest {
 
     @Test
     public void testGetRelation() {
-        Relation relation = Relation.HAS_MANY;
-        String id = relation.getId();
+        Relation relation = new Relation(RelationType.HAS_MANY);
+        String id = relation.getType().getId();
         Assert.assertEquals(ID_EXPECTED, id);
-        Assert.assertEquals(relation, Relation.getRelationById(id));
+        Assert.assertEquals(relation.getType(), RelationType.getRelationTypeById(id));
     }
 }

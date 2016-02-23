@@ -3,6 +3,7 @@ package org.ms.iknow.core.type.sense.radiation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 
@@ -44,7 +45,7 @@ public class HSBTest {
     
     Text text = new Text(TEXT_VALUE);
     
-    new Synapse(hsb, Relation.IS, text);
+    new Synapse(hsb, new Relation(RelationType.IS), text);
       
     HSB clone = hsb.clone();
     

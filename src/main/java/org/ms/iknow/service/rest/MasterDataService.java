@@ -1,6 +1,6 @@
 package org.ms.iknow.service.rest;
 
-import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ public class MasterDataService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRelations() {
         List<EnumObject> relations = new ArrayList<EnumObject>();
-        for (Relation relation : Relation.getAllValues()) {
-            relations.add(new EnumObject(relation));
+        for (RelationType relationType : RelationType.getAllValues()) {
+            relations.add(new EnumObject(relationType));
         }
         return Response.ok(relations).build();
     }
@@ -28,9 +28,9 @@ public class MasterDataService {
         private String id;
         private String value;
 
-        public EnumObject(Relation relation) {
-            this.id = relation.getId();
-            this.value = relation.getValue();
+        public EnumObject(RelationType relationType) {
+            this.id = relationType.getId();
+            this.value = relationType.getValue();
         }
 
         public EnumObject(String id, String value) {

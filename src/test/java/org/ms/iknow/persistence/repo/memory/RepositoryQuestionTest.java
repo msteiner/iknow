@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.question.Question;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class RepositoryQuestionTest {
     public void testCreateListDeleteQuestion() {
 
         // create 3 questions.
-        repo.createQuestion(createQuestion("Baum", Relation.HAS, "Stamm"));
-        repo.createQuestion(createQuestion("Himmel", Relation.IS, "Blau"));
-        repo.createQuestion(createQuestion("Eisen", Relation.IS, "organisch"));
+        repo.createQuestion(createQuestion("Baum", RelationType.HAS, "Stamm"));
+        repo.createQuestion(createQuestion("Himmel", RelationType.IS, "Blau"));
+        repo.createQuestion(createQuestion("Eisen", RelationType.IS, "organisch"));
         String key2 = null;
 
         // assert the 3 questions.
@@ -68,11 +69,11 @@ public class RepositoryQuestionTest {
         }
     }
 
-    Question createQuestion(String parent, Relation relation, String child) {
+    Question createQuestion(String parent, RelationType relationType, String child) {
         Question question = new Question();
         question.setParentId(UUID.randomUUID().toString());
         question.setParentName(parent);
-        question.setRelation(relation);
+        question.setRelation(new Relation(relationType));
         question.setChildId(UUID.randomUUID().toString());
         question.setChildName(child);
         return question;

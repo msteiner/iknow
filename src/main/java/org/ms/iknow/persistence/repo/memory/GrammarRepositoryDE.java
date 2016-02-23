@@ -1,6 +1,7 @@
 package org.ms.iknow.persistence.repo.memory;
 
 import org.ms.iknow.core.type.Relation;
+import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.exception.GrammarException;
 import org.ms.iknow.language.de.type.WordType;
 import org.ms.iknow.persistence.repo.GrammarRepository;
@@ -19,7 +20,7 @@ public class GrammarRepositoryDE implements GrammarRepository {
     List<String>                       adjectives   = new ArrayList<String>();
     List<String>                       undefineds   = new ArrayList<String>();
     Map<String, String>                verbs        = new HashMap<String, String>();
-    Map<String, Relation>              verbIndex    = new HashMap<String, Relation>();
+    Map<String, RelationType>          verbIndex    = new HashMap<String, RelationType>();
     List<String>                       genus        = new ArrayList<String>();
     List<String>                       numerus      = new ArrayList<String>();
 
@@ -68,13 +69,13 @@ public class GrammarRepositoryDE implements GrammarRepository {
     }
 
     @Override
-    public void addVerb(String expression, Relation relation) throws GrammarException {
+    public void addVerb(String expression, RelationType relationType) throws GrammarException {
         checkNull(expression);
-        checkNull(relation);
+        checkNull(relationType);
 
         String id = UUID.randomUUID().toString();
         verbs.put(expression, id);
-        verbIndex.put(id, relation);
+        verbIndex.put(id, relationType);
     }
 
     @Override
@@ -140,21 +141,24 @@ public class GrammarRepositoryDE implements GrammarRepository {
         }
     }
 
-    void checkNull(Relation relation) throws GrammarException {
-        if (relation == null) {
+    void checkNull(RelationType relationType) throws GrammarException {
+        if (relationType == null) {
             throw new GrammarException("Cannot add expression with Relation [null] to a repository.");
         }
     }
 
     @Override
     public Relation getRelation(String verb) {
+        RelationType relationType = RelationType.UNKNOWN;
+        System.out.println("*** verb: " + verb);
         if (verbs.containsKey(verb)) {
             String id = verbs.get(verb);
-            if (verbIndex.containsKey(id)) {
-                return verbIndex.get(id);
+            System.out.println("*** verb found in verbs. Id is: " + id);
+            if (verbIndex.containsKey(id)) {                
+                relationType = verbIndex.get(id);
+                System.out.println("*** id[" + id + "] found in verbIndex. RelationType is: " + relationType);
             }
-            return Relation.getRelationById(id);
         }
-        return Relation.UNKNOWN;
+        return new Relation(relationType);
     }
 }

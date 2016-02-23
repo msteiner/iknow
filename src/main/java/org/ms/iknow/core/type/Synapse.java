@@ -94,7 +94,8 @@ public class Synapse extends ElementBase {
         builder.append("  parentId   = " + parentId + "\n");
         builder.append("  childId    = " + childId + "\n");
         if (relation != null) {
-            builder.append("  relation   = " + relation.getValue() + "\n");
+            builder.append("  relation.type    = " + relation.getType() + "\n");
+            builder.append("  relation.value   = " + relation.getValue() + "\n");
         } else {
             builder.append("  relation   = null\n");
         }
