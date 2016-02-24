@@ -41,89 +41,78 @@ Nicht unterstützte und ungültige Fälle:
                  
 Gültige Fälle:
 
-  CASE SUBSTANTIV:
+  CASE 10:
   ..........     ..........     ..........                    ..........
   |GENUS   |     |SUBST.  |     |VERB    |                    |ADJEKTIV|
   |........|---->|........|---->|........|------------------->|........|
   |Der     |     |Baum    |     |ist     |                    |gross   |
   ..........     ..........     ..........                    ..........
-                                                                          
+  CASE 20:
   ..........     ..........     ..........     ..........     ..........
   |GENUS   |     |SUBST.  |     |VERB    |     |GENUS   |     |SUBST.  |
   |........|---->|........|---->|........|---->|........|---->|........|
   |Der     |     |ICN     |     |ist     |     |Ein     |     |Zug     |
   ..........     ..........     ..........     ..........     ..........
-                 
+  CASE 30:
                  ..........     ..........                    ..........
                  |SUBST.  |     |VERB    |                    |SUBST.  |
                  |........|---->|........|------------------->|........|
                  |Vögel   |     |sind    |                    |Tiere   |
                  ..........     ..........                    ..........  
-  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  CASE ADJEKTIV:
+  
                  ..........     ..........                    ..........
                  |ADJEKTIV|     |VERB    |                    |ADJEKTIV|
                  |........|---->|........|------------------->|........|
                  |klein   |     |ist     |                    |hübsch  |
                  ..........     ..........                    ..........
-  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  CASE UNBEKANNT:
+  
                  ..........     ..........                    ..........
                  |UNKNOWN |     |UNKNOWN |                    |UNKNOWN |
                  |........|---->|........|------------------->|........|
                  |Lorem   |     |Ipsum   |                    |dolor   |
                  ..........     ..........                    ..........
-  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-  CASE NUMERISCH:
+  CASE 60:
                  ..........     ..........     ..........     ..........
                  |SUBST.  |     |VERB    |     |NUMERAL |     |SUBST.  |
                  |........|---->|........|---->|........|---->|........|
                  |Bern    |     |hat     |     |250000  |     |Bewohner|
                  ..........     ..........     ..........     ..........
-                 
+  CASE 70:
   ..........     ..........     ..........     ..........     ..........
   |GENUS   |     |SUBST.  |     |VERB    |     |NUMERAL |     |SUBST.  |
   |........|---->|........|---->|........|---->|........|---->|........|
   |Ein     |     |Auto    |     |hat     |     |4       |     |Räder   |
   ..........     ..........     ..........     ..........     ..........
-                 
-Logik
------
-  IF (Anzahl Token < 3)
-    Ungültig (Zuwenig Wörter)
-  IF (Anzahl Token == 3)
-      IF (Token(0) != GENUS)
-          IF (Token(0) !isSubstantiv || !isAdjektiv)
-              registerUnknown(Token(0))
-          registerVerb(Token(1))
-          IF (Token(2) !isSubstantiv || !isAdjektiv)
-              registerUnknown(Token(2))
-      ELSE
-          Ungültig(Unverständliche Expression)
-  IF (Anzahl Token == 4)
-      IF (Token(0) == GENUS)
-          Token(1) = SUBSTANTIV
-          registerSubstantiv(Token(1))
-      ELSE
-          registerAdjektiv(Token(1))
-      registerVerb(Token(2))
-      IF (Token(3) !isSubstantiv || !isAdjektiv)
-          registerUnknown(Token(3))
-  IF (Anzahl Token == 5)
-      IF (Token(0) == GENUS)
-          Token(1) = SUBSTANTIV
-          registerSubstantiv(Token(1))
-          registerVerb(Token(2))
-          IF (Token(3) == GENUS)
-              IF (Token(3) !isSubstantiv || !isAdjektiv)
-                  registerUnknown(Token(3))
-          ELSE
-              Ungültig(Unverständliche Expression)
-      ELSE
-          >Ungültig(Unverständliche Expression)
-  ELSE 
-    Ungültig (Zuviele Wörter)
-  
+
+Entscheidungstabelle
+--------------------
+  ..................................................................
+  .   .L(3).L(4).L(5).W1     .W3     .W4     .W2*    .W3*    .
+  .   .    .    .    .IsGenus.IsNum  .IsNum  .IsVerb .IsVerb .
+  ..................................................................
+  .10 .    .  x .    .   x   .       .       .       .  (x)  .
+  .20 .    .    .  x .   x   .       .       .       .  (x)  .
+  .30 .  x .    .    .       .       .       .  (x)  .       .
+  .60 .    .  x .    .       .   x   .       .  (x)  .       .
+  .70 .    .    .  x .   x   .       .   x   .       .  (x)  .
+  ..................................................................
+  * Kann nicht als Bestimmungskriterium verwendet werden(->Synonyme).
+
+  Daraus ergibt sich:
+  IF (<L3 || >L5)
+      Ungültig (Zu viele oder zu wenige Wörter)
+  IF (L4 && W1==Genus)
+      CASE 10
+  IF (L5 && W1==Genus)
+      CASE 20
+  IF (L3)
+      CASE 30
+  IF (L4 && W3==Num)
+      CASE 60
+  IF (L5 && W1==Genus && W4==Num)
+      CASE 70
+  ELSE
+      Ungültig(Unverständliche Expression)
                  
 Question
 ................................................................................                 

@@ -42,7 +42,6 @@ public enum RelationType {
 
     public static RelationType getRelationTypeById(String id) {
         for (RelationType relationType : list) {
-            System.out.println("   --- " + relationType.getId() + ":" + id);
             if (relationType.getId().equals(id)) {
                 return relationType;
             }

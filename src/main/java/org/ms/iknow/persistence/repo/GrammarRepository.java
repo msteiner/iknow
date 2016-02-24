@@ -23,6 +23,8 @@ public interface GrammarRepository {
   
   public boolean containsVerb(String verb);
   
+  public boolean containsNumerus(String numerus);
+  
   public boolean containsUndefined(String term);
   
   public Relation getRelation(String verb);

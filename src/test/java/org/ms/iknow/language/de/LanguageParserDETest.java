@@ -57,8 +57,6 @@ public class LanguageParserDETest {
         addToGrammarRepository("gross", WordType.ADJECTIVE);
       
         Synapse synapse = parseStatement("Der Baum wirkt gross.");
-        System.out.println("   +++---+++ Relation    : " + synapse.getRelation());
-        System.out.println("   +++---+++ RelationType: " + synapse.getRelation().getType());
         assertSynapse("Baum", RelationType.IS, "gross", synapse);
     }
 

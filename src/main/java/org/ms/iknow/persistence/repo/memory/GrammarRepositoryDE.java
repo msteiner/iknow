@@ -99,6 +99,11 @@ public class GrammarRepositoryDE implements GrammarRepository {
     }
   
     @Override
+    public boolean containsNumerus(String num) {
+        return numerus.contains(num);
+    }
+  
+    @Override
     public boolean containsUndefined(String term) {
         return undefineds.contains(term);
     }
@@ -150,13 +155,10 @@ public class GrammarRepositoryDE implements GrammarRepository {
     @Override
     public Relation getRelation(String verb) {
         RelationType relationType = RelationType.UNKNOWN;
-        System.out.println("*** verb: " + verb);
         if (verbs.containsKey(verb)) {
             String id = verbs.get(verb);
-            System.out.println("*** verb found in verbs. Id is: " + id);
             if (verbIndex.containsKey(id)) {                
                 relationType = verbIndex.get(id);
-                System.out.println("*** id[" + id + "] found in verbIndex. RelationType is: " + relationType);
             }
         }
         return new Relation(relationType);
