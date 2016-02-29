@@ -10,6 +10,7 @@ import org.ms.iknow.core.type.Relation;
 import org.ms.iknow.core.type.RelationType;
 import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
+import org.ms.iknow.exception.BusinessException;
 import org.ms.iknow.exception.GrammarException;
 import org.ms.iknow.language.LanguageParser;
 import org.ms.iknow.language.de.type.WordType;
@@ -70,7 +71,7 @@ public class LanguageParserDETest {
         assertSynapse("Baum", RelationType.IS, "gross", synapse);
         assertTrue(grammarRepo.containsVerb("wirkt"));
         assertEquals(RelationType.IS, grammarRepo.getRelation("wirkt").getType());
-        assertTrue(grammarRepo.containsUndefined("gross"));
+        assertTrue("Expected Term [gross] in grammarRepo.adjectives but haven't found.", grammarRepo.containsAdjective("gross"));
     }
   
     @Test
@@ -84,7 +85,7 @@ public class LanguageParserDETest {
         assertTrue(grammarRepo.containsVerb("wirkt"));
         assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("wirkt").getType() + "].", RelationType.IS, grammarRepo.getRelation("wirkt").getType());
         assertTrue(grammarRepo.containsSubstantive("Baum"));
-        assertTrue(grammarRepo.containsUndefined("gross"));
+        assertTrue("Expected Term [gross] in grammarRepo.adjectives but haven't found.", grammarRepo.containsAdjective("gross"));
     }
     
     @Test
@@ -125,6 +126,9 @@ public class LanguageParserDETest {
         assertTrue(grammarRepo.containsUndefined("dolor"));
     }
   
+    /**
+     * Case 60.
+     */
     @Test
     public void testParsePartiallyKnownExpression_6() {
         addToGrammarRepository("Bern", WordType.SUBSTANTIVE);
@@ -132,11 +136,29 @@ public class LanguageParserDETest {
         addToGrammarRepository("250000", WordType.NUMERUS);
         addToGrammarRepository("Einwohner", WordType.SUBSTANTIVE);
         Synapse synapse = parseStatement("Bern hat 250000 Einwohner.");
-        assertSynapse("Bern", RelationType.HAS, "Einwohner", synapse);
-        assertTrue(grammarRepo.containsVerb("wirkt"));
-        assertEquals("Expected [Relation.IS] but was [" + grammarRepo.getRelation("wirkt").getType() + "].", RelationType.IS, grammarRepo.getRelation("wirkt").getType());
-        assertTrue(grammarRepo.containsSubstantive("Baum"));
-        assertTrue(grammarRepo.containsUndefined("gross"));
+        assertSynapse("Bern", RelationType.HAS, "250000", "Einwohner", synapse);
+        assertTrue(grammarRepo.containsVerb("hat"));
+        assertEquals("Expected [Relation.HAS] but was [" + grammarRepo.getRelation("hat").getType() + "].", RelationType.HAS, grammarRepo.getRelation("hat").getType());
+        grammarRepo.containsNumerus("250000");
+        assertTrue(grammarRepo.containsSubstantive("Einwohner"));
+    }
+  
+    /**
+     * Case 70.
+     */
+    @Test
+    public void testParsePartiallyKnownExpression_7() {
+        addToGrammarRepository("Ein", WordType.GENUS);
+        addToGrammarRepository("Auto", WordType.SUBSTANTIVE);
+        addToGrammarRepository("hat", RelationType.HAS);
+        addToGrammarRepository("4", WordType.NUMERUS);
+        addToGrammarRepository("Räder", WordType.SUBSTANTIVE);
+        Synapse synapse = parseStatement("Ein Auto hat 4 Räder.");
+        assertSynapse("Auto", RelationType.HAS, "4", "Räder", synapse);
+        assertTrue(grammarRepo.containsVerb("hat"));
+        assertEquals("Expected [Relation.HAS] but was [" + grammarRepo.getRelation("hat").getType() + "].", RelationType.HAS, grammarRepo.getRelation("hat").getType());
+        grammarRepo.containsNumerus("4");
+        assertTrue(grammarRepo.containsSubstantive("Räder"));
     }
 
     private void assertSynapse(String parent, RelationType relationType, String child, Synapse synapse) {
@@ -147,6 +169,22 @@ public class LanguageParserDETest {
         assertEquals(expected.getParent().getName(), synapse.getParent().getName());
         assertEquals(expected.getChild().getName(), synapse.getChild().getName());
         assertEquals(expected.getRelation().getType(), synapse.getRelation().getType());
+    }
+  
+    private void assertSynapse(String parent, RelationType relationType, String value, String child, Synapse synapse) {
+        Neuron p = new Text(parent);
+        Neuron c = new Text(child);
+        Synapse expected = null;
+        try {
+            expected = new Synapse(p, new Relation(relationType, value), c);
+        } catch (BusinessException e) {
+            fail(e.getMessage());
+        }
+
+        assertEquals(expected.getParent().getName(), synapse.getParent().getName());
+        assertEquals(expected.getChild().getName(), synapse.getChild().getName());
+        assertEquals(expected.getRelation().getType(), synapse.getRelation().getType());
+        assertEquals(expected.getRelation().getValue(), synapse.getRelation().getValue());
     }
 
     private Synapse parseStatement(String expression) {

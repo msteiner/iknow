@@ -11,7 +11,6 @@ import org.ms.iknow.core.type.Synapse;
 import org.ms.iknow.core.type.sense.text.Text;
 import org.ms.iknow.exception.GrammarException;
 import org.ms.iknow.language.LanguageParser;
-import org.ms.iknow.language.de.type.WordType;
 import org.ms.iknow.persistence.repo.GrammarRepository;
 import org.ms.iknow.persistence.repo.memory.GrammarRepositoryDE;
 
@@ -78,89 +77,8 @@ public class LanguageParserDE implements LanguageParser {
      * @return the synapse
      */
     private Synapse processStatement(List<String> tokens) throws GrammarException {
-        if (tokens == null) {
-            throw new GrammarException("Von nichts kommt nichts: Keine Tokens bekommen.");
-        }
-        if (tokens.size() < 3 || tokens.size() > 5) {
-            throw new GrammarException("Der Satz muss zwischen 3 und 5 Wörter enthalten, weist jedoch " + tokens.size() + " auf.");
-        }
-        Neuron parent;
-        Relation relation;
-        Neuron child;
-        
-        if (tokens.size() == 3) {
-            // "Wale sind Tiere" oder "klein ist schön" oder "Lorem Ipsum dolor".
-            if (isKnownAsGenus(tokens.get(0))) {
-                throw new GrammarException("Unverständlicher Satzbau; sorry.");
-            } else {
-                registerToken(tokens.get(0));
-                parent = new Text(tokens.get(0));
-                relation = registerVerb(tokens.get(1));
-                registerToken(tokens.get(2));
-                child = new Text(tokens.get(2));
-            }
-        } else if (tokens.size() == 4) {
-            // "Der Baum ist schön".
-            if (isKnownAsGenus(tokens.get(0))) {
-                registerSubstantive(tokens.get(1));
-            } else {
-                registerAdjective(tokens.get(1));
-            }
-            parent = new Text(tokens.get(1));
-            relation = registerVerb(tokens.get(2));
-            registerToken(tokens.get(3));
-            child = new Text(tokens.get(3));
-        } else {
-            // "Der ICN ist ein Zug".
-            if (isKnownAsGenus(tokens.get(0))) {
-                registerSubstantive(tokens.get(1));
-                parent = new Text(tokens.get(1));
-                relation = registerVerb(tokens.get(2));
-                if (isKnownAsGenus(tokens.get(3))) {
-                    registerToken(tokens.get(4));
-                    child = new Text(tokens.get(4));
-                } else {
-                    throw new GrammarException("Unverständlicher Satzbau; sorry.");
-                }
-            } else {
-                throw new GrammarException("Unverständlicher Satzbau; sorry.");
-            }
-        }
-        return new Synapse(parent, relation, child);
-    }
-  
-    private void registerToken(String expression) throws GrammarException {
-        if (!grammarRepository.containsSubstantive(expression) || !grammarRepository.containsAdjective(expression)) {
-            grammarRepository.addExpression(expression, WordType.UNKNOWN);
-        }
-    }
-  
-    private void registerSubstantive(String expression) throws GrammarException {
-        if (!grammarRepository.containsSubstantive(expression)) {
-            grammarRepository.addExpression(expression, WordType.SUBSTANTIVE);
-        }
-    }
-  
-    private void registerAdjective(String expression) throws GrammarException {
-        if (!grammarRepository.containsAdjective(expression)) {
-            grammarRepository.addExpression(expression, WordType.ADJECTIVE);
-        }
-    }
-  
-    private Relation registerVerb(String expression) throws GrammarException {
-        if (!grammarRepository.containsVerb(expression)) {
-            grammarRepository.addExpression(expression, WordType.VERB);
-            grammarRepository.addVerb(expression, RelationType.UNKNOWN);
-            Relation relation = new Relation(RelationType.UNKNOWN);
-            return relation;
-        }
-        else {
-            return grammarRepository.getRelation(expression);
-        }
-    }
-  
-    private boolean isKnownAsGenus(String genus) {
-        return grammarRepository.containsGenus(genus);
+        ParserCase parserCase = ParserCaseFactory.getParserCase(tokens);
+        return parserCase.parse();
     }
 
     private String removeMarks(String expression) {

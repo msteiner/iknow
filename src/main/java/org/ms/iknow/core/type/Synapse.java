@@ -25,8 +25,8 @@ public class Synapse extends ElementBase {
 
     private void initPair(Neuron parent, Relation relation, Neuron child, int weight) {
         //parent.getSynapseIds().add(this.id);
-      parent.addSynapse(this);  
-      setParent(parent);
+        parent.addSynapse(this);
+        setParent(parent);
         setChild(child);
         this.relation = relation;
         this.weight = weight;

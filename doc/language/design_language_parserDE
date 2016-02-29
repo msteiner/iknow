@@ -73,7 +73,7 @@ Gültige Fälle:
                  ..........     ..........                    ..........
   CASE 60:
                  ..........     ..........     ..........     ..........
-                 |SUBST.  |     |VERB    |     |NUMERAL |     |SUBST.  |
+                 |UNKNOWN |     |VERB    |     |NUMERAL |     |SUBST.  |
                  |........|---->|........|---->|........|---->|........|
                  |Bern    |     |hat     |     |250000  |     |Bewohner|
                  ..........     ..........     ..........     ..........
@@ -116,19 +116,140 @@ Entscheidungstabelle
                  
 Question
 ................................................................................                 
+Stichworte:
+- Interrogativpronomen
+
+Gültige Fälle:
+
+  CASE 1000:
+                 ..........     ..........     ..........                                   ..........
+                 |VERB    |     |GENUS   |     |SUBST.  |                                   |ADJECT. |
+                 |........|---->|........|---->|........|---------------------------------->|........|
+                 |Ist     |     |ein     |     |Baum    |                                   |gross   | ?
+                 ..........     ..........     ..........                                   ..........
+  CASE 1010:
+                 ..........     ..........     ..........                    ..........     ..........
+                 |VERB    |     |GENUS   |     |SUBST.  |                    |GENUS   |     |SUBST.  |
+                 |........|---->|........|---->|........|------------------->|........|---->|........|
+                 |Ist     |     |ein     |     |Cabrio  |                    |ein     |     |Auto    | ?
+                 ..........     ..........     ..........                    ..........     ..........
+  CASE 1020:
+                 ..........                    ..........                                   ..........
+                 |VERB    |                    |SUBST.  |                                   |SUB/ADJ |
+                 |........|------------------->|........|---------------------------------->|........|
+                 |Hast    |                    |du      |                                   |Mut     | ?
+                 ..........                    ..........                                   ..........
+  CASE 1030:
+                 ..........                    ..........
+                 |VERB    |                    |SUBST.  |
+                 |........|------------------->|........|
+                 |brennt  |                    |Holz    |                                              ?
+                 ..........                    ..........
+  CASE 1040:
+                 ..........     ..........     ..........
+                 |VERB    |     |GENUS   |     |SUBST.  |
+                 |........|---->|........|---->|........|
+                 |schmilzt|     |das     |     |Eis     |                                              ?
+                 ..........     ..........     ..........
+  CASE 1100:
+  ..........     ..........                    ..........
+  |I_PRONOM|     |VERB    |                    |SUB/ADJ |
+  |........|---->|........|------------------->|........|
+  |Was     |     |ist     |                    |gelb    |                                              ?
+  ..........     ..........                    ..........
+  CASE 1110:
+  ..........     ..........     ..........     ..........
+  |I_PRONOM|     |VERB    |     |GENUS   |     |SUB/ADJ |
+  |........|---->|........|---->|........|---->|........|
+  |Was     |     |ist     |     |ein     |     |Baum    |                                              ?
+  ..........     ..........     ..........     ..........
+  CASE 1120:
+  ..........                                   ..........     ..........                    ..........
+  |I_PRONOM|                                   |SUBST.  |     |Verb    |                    |SUB/ADJ |
+  |........|---------------------------------->|........|---->|........|------------------->|........|
+  |Wieviele|                                   |Bewohner|     |hat     |                    |Bern    | ?
+  ..........                                   ..........     ..........                    ..........
+  CASE 1130:
+  ..........                                   ..........     ..........     ..........     ..........
+  |I_PRONOM|                                   |SUBST.  |     |VERB    |     |GENUS   |     |SUBST.  |
+  |........|---------------------------------->|........|---->|........|---->|........|---->|........|
+  |Wieviele|                                   |Räder   |     |hat     |     |ein     |     |Auto    | ?
+  ..........                                   ..........     ..........     ..........     ..........
   
-  .VERB          .GENUS         .SUB./ADJ.     .SUB./ADJ.
-  .........................................................
-  .Hast          .              .du            .Mut     . ?
-  .Ist           .das           .Wasser        .kalt    . ?
-  .Haben         .              .Autos         .Räder   . ?
-  .Scheint       .die           .Sonne         .        . ?
-  .Spricht       .              .Lisa          .        . ?
-  .Tut           .es            .ihm           .gut     . ?
+Entscheidungstabelle
+--------------------
+  ........................................................................
+  .    .L(2).L(3).L(4).L(5).W1     .W2     .W3     .W4     .W3*    .
+  .    .    .    .    .    .IsIpro .IsGenus.IsGenus.IsGenus.IsVerb .
+  ........................................................................
+  .1000.    .    . x  .    .       .   x   .       .       .       .
+  .1010.    .    .    . x  .       .   x   .       .   x   .       .
+  .1020.    . x  .    .    .       .       .       .       .       .
+  .1030. x  .    .    .    .       .       .       .       .       .
+  .1040.    . x  .    .    .       .   x   .       .       .       .
+  .1100.    . x  .    .    .   x   .       .       .       .       .
+  .1110.    .    . x  .    .   x   .       .   x   .       .       .
+  .1120.    .    . x  .    .   x   .       .       .       .       .
+  .1130.    .    .    . x  .   x   .       .       .   x   .       .
+  ........................................................................
   
-Was ist Eisen?
-Wieviele Einwohner hat Bern?
-  
+  Daraus ergibt sich:
+  IF (<L2 || >L5)
+      Ungültig (Zu viele oder zu wenige Wörter)
+  IF (L2)
+      CASE 1030
+      W1=VERB
+      W2=SUBSTANTIV
+  ELSE IF (L3)
+      IF (W1==IsPron)
+          CASE 1100
+          W1=IPRONOM
+          W2=VERB
+          W3=UNKNOWN
+      ELSE IF (W2==Genus)
+          CASE 1040
+          W1=VERB
+          W3=SUBSTANTIV
+      ELSE
+          CASE 1020
+          W1=VERB
+          W2=SUBSTANTIV
+          W3=UNKNOWN
+  ELSE IF (L4)
+      IF (W2==Genus)
+          CASE 1000
+          W1=VERB
+          W3=SUBSTANTIV
+          W4=ADJECTIV
+      ELSE IF (W1==IsPron && W3==Genus)
+          CASE 1110
+          W1=IPRONOM
+          W2=VERB
+          W4=UNKNOWN
+      ELSE IF (W1==IsPron)
+          CASE 1120
+          W1=IPRONOM
+          W2=SUBSTANTIV
+          W3=VERB
+          W4=UNKNOWN
+      ELSE
+          Ungültig(Unverständliche Expression)
+  ELSE IF (L5)
+      IF (W2==Genus && IF (W4==Genus))
+          CASE 1010
+          W1=VERB
+          W3=SUBSTANTIV
+          W5=SUBSTANTIV
+      ELSE IF (L5 && W1==Genus && W4==Num)
+          CASE 1130
+          W1=IPRONOM
+          W2=SUBSTANTIV
+          W3=VERB
+          W5=SUBSTANTIV
+      ELSE
+          Ungültig(Unverständliche Expression)
+  ELSE
+      Ungültig(Unverständliche Expression)
   
   
   

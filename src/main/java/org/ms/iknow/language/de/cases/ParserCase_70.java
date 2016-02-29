@@ -11,19 +11,19 @@ import java.util.List;
 /**
  * Siehe dazu DESIGN LANGUAGE PARSER DE
  * Beispiel:
- * "Der Baum ist gross."
+ * "Ein Auto hat 4 Räder."
  */
-public class ParserCase_10 extends ParserCase {
-    
-    public ParserCase_10(List<String> tokens) {
+public class ParserCase_70 extends ParserCase {
+
+    public ParserCase_70(List<String> tokens) {
         this.tokens = tokens;
     }
-
+  
     @Override
     public Synapse parse() throws GrammarException {
         String substantive_1 = registerSubstantive(tokens.get(1));
-        Relation relation = registerVerb(tokens.get(2));
-        String adjective_1 = registerAdjective(tokens.get(3));
-        return new Synapse(new Text(substantive_1), relation, new Text(adjective_1));
+        Relation relation = registerVerb(tokens.get(2), tokens.get(3));
+        String substantive_2 = registerSubstantive(tokens.get(4));
+        return new Synapse(new Text(substantive_1), relation, new Text(substantive_2));
     }
 }
